@@ -22,7 +22,7 @@ parser = argparse.ArgumentParser(
     "Run inference using UpDown Captioner, on either nocaps val or test split."
 )
 parser.add_argument(
-    "--config", required=True, help="Path to a config file with all configuration parameters."
+    "--config",default='/media/data/ismail/code/updown-baseline/configs/updown_nocaps_val.yaml',help="Path to a config file with all configuration parameters."
 )
 parser.add_argument(
     "--config-override",
@@ -35,7 +35,7 @@ parser.add_argument(
 
 parser.add_argument_group("Compute resource management arguments.")
 parser.add_argument(
-    "--gpu-ids", required=True, nargs="+", type=int, help="List of GPU IDs to use (-1 for CPU)."
+    "--gpu-ids", nargs="+", default=[0], type=int, help="List of GPU IDs to use (-1 for CPU)."
 )
 parser.add_argument(
     "--cpu-workers", type=int, default=0, help="Number of CPU workers to use for data loading."
@@ -44,11 +44,11 @@ parser.add_argument(
     "--in-memory", action="store_true", help="Whether to load image features in memory."
 )
 parser.add_argument(
-    "--checkpoint-path", required=True, help="Path to load checkpoint and run inference on."
+    "--checkpoint-path",default='/media/data/ismail/updown.pth', help="Path to load checkpoint and run inference on."
 )
-parser.add_argument("--output-path", required=True, help="Path to save predictions (as a JSON).")
+parser.add_argument("--output-path", default='/media/data/ismail/code/updown-baseline/results/results.json', help="Path to save predictions (as a JSON).")
 parser.add_argument(
-    "--evalai-submit", action="store_true", help="Whether to submit the predictions to EvalAI."
+    "--evalai-submit", action="store_true", default=True, help="Whether to submit the predictions to EvalAI."
 )
 
 

@@ -34,7 +34,7 @@ MANIFEST
 
 # Datasets and preprocessed files
 data/
-!updown/data/
+updown/data/
 
 # Checkpoints directory
 checkpoints/
