@@ -48,3 +48,7 @@ docs/_build
 # virtualenv
 venv/
 ENV/
+
+#val/test images
+getImages/val/
+getImages/test/
