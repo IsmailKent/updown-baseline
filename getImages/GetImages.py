@@ -1,8 +1,6 @@
 import json
 import os
 
-
-import json
 mode = input("val/test?")
 file_source = ""
 if (mode=="val"):
