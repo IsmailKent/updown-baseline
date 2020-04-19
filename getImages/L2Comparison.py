@@ -44,6 +44,8 @@ with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r
             boxes = np.array(vg_result['boxes'][index])
             boxes = boxes.reshape(boxes.size//4,4)
             print("first box in boxes:  ", boxes[0])
+            print(boxes)
             for box in boxes:
                 if box == look_for_box:
                     print("found")
+            break
