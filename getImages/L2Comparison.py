@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
 
-filename = 'nocaps_val_vg_detector_features_adaptive.h5'    
+filename = '../data/nocaps_val_vg_detector_features_adaptive.h5'    
 
 class_label = int(input("enter class id to find average distance"))
 
