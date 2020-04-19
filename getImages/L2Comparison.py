@@ -19,4 +19,4 @@ import json
 
 with open('nocaps_val_detections.json','r') as oi_result:
     results = json.load(oi_result)
-    print(results['categories'])
+    print(results['categories'][0])
