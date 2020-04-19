@@ -33,7 +33,9 @@ with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r
     for a in results['annotations']:
         if a['category_id'] == class_label:
             look_for_box = a['bbox']
+            print("look_for_box: ",look_for_box)
             in_image = a['image_id']
+            print("in_image: ",in_image)
             index = 0
             for i in range(4500):
                 if (vg_result['image_id'][i]==in_image):
@@ -41,8 +43,7 @@ with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r
                     break
             boxes = np.array(vg_result['boxes'][index])
             boxes = boxes.reshape(boxes.size//4,4)
+            print("first box in boxes:  ", boxes[0])
             for box in boxes:
                 if box == look_for_box:
                     print("found")
-            print(look_for_box)
-            print(boxes)
