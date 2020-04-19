@@ -25,7 +25,7 @@ from PIL import Image
 
 filename = '../data/nocaps_val_vg_detector_features_adaptive.h5'    
 
-class_label = int(input("enter class id to find average distance"))
+class_label = int(input("enter class id to find average distance:  "))
 
 with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r') as vg_result:
     results = json.load(oi_result)
@@ -43,9 +43,9 @@ with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r
                     break
             boxes = np.array(vg_result['boxes'][index])
             boxes = boxes.reshape(boxes.size//4,4)
-            print("first box in boxes:  ", boxes[0])
+            print("first box in boxes:  ", list(boxes[0]))
             print(boxes)
             for box in boxes:
-                if box == look_for_box:
+                if list(box) == look_for_box:
                     print("found")
             break
