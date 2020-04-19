@@ -34,7 +34,15 @@ with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r
         if a['category_id'] == class_label:
             look_for_box = a['bbox']
             in_image = a['image_id']
-            boxes = np.array(vg_result['boxes'][in_image])
+            index = 0
+            for i in range(4500):
+                if (vg_result['image_id'][i]==in_image):
+                    index = i
+                    break
+            boxes = np.array(vg_result['boxes'][index])
             boxes = boxes.reshape(boxes.size//4,4)
+            for box in boxes:
+                if box == look_for_box:
+                    print("found")
             print(look_for_box)
             print(boxes)
