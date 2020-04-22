@@ -205,7 +205,7 @@ if __name__ == "__main__":
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
         f = open("batchcontent.txt", "a")
-        f.write(json.dumps(batch))
+        f.write(batch.numpy())
         f.close()
         print("============== Batch printed===============")
 
