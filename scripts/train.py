@@ -207,6 +207,7 @@ if __name__ == "__main__":
         f = open("batchcontent.txt", "a")
         f.write(batch)
         f.close()
+        print("============== Batch printed===============")
 
         optimizer.zero_grad()
         output_dict = model(batch["image_features"], batch["caption_tokens"])
