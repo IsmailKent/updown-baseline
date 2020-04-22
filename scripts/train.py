@@ -208,7 +208,7 @@ if __name__ == "__main__":
         print(batch)
         f = open("batchcontent.txt", "a")
         for batch_item in batch.items():
-            f.write(batch_item)
+            f.write(str(batch_item))
         f.close()
         print("============== Batch printed===============")
 
