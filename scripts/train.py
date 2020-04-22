@@ -151,6 +151,7 @@ if __name__ == "__main__":
         num_workers=_A.cpu_workers,
         collate_fn=val_dataset.collate_fn,
     )
+    
 
     model = UpDownCaptioner.from_config(_C, vocabulary=vocabulary).to(device)
     if len(_A.gpu_ids) > 1 and -1 not in _A.gpu_ids:
@@ -203,6 +204,9 @@ if __name__ == "__main__":
 
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
+        f = open("batchcontent.txt", "a")
+        f.write(batch)
+        f.close()
 
         optimizer.zero_grad()
         output_dict = model(batch["image_features"], batch["caption_tokens"])
