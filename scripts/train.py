@@ -204,10 +204,11 @@ if __name__ == "__main__":
 
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
-        print(batch.type())
+        
         print(batch)
         f = open("batchcontent.txt", "a")
-        f.write(batch.numpy())
+        for batch_item in batch.items():
+            f.write(batch_item)
         f.close()
         print("============== Batch printed===============")
 
