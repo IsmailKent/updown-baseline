@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 from allennlp.data import Vocabulary
 
 from updown.config import Config
-from updown.data.readers import CocoCaptionsReader, ConstraintBoxesReader, ImageFeaturesReader
+from updown.data.readers import CocoCaptionsReader, ConstraintBoxesReader, ImageFeaturesReader, ImageBoxesReader
 from updown.types import (
     TrainingInstance,
     TrainingBatch,
@@ -54,6 +54,7 @@ class TrainingDataset(Dataset):
     ) -> None:
         self._vocabulary = vocabulary
         self._image_features_reader = ImageFeaturesReader(image_features_h5path, in_memory)
+        self._image_boxes_reader= ImageBoxesReader(image_features_h5path, in_memory)
         self._captions_reader = CocoCaptionsReader(captions_jsonpath)
 
         self._max_caption_length = max_caption_length
@@ -78,6 +79,7 @@ class TrainingDataset(Dataset):
     def __getitem__(self, index: int) -> TrainingInstance:
         image_id, caption = self._captions_reader[index]
         image_features = self._image_features_reader[image_id]
+        image_boxes = self._image_boxes_reader[image_id]
 
         # Tokenize caption.
         caption_tokens: List[int] = [self._vocabulary.get_token_index(c) for c in caption]
@@ -92,6 +94,7 @@ class TrainingDataset(Dataset):
         item: TrainingInstance = {
             "image_id": image_id,
             "image_features": image_features,
+            "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
         }
         return item
@@ -107,10 +110,15 @@ class TrainingDataset(Dataset):
         image_features = torch.from_numpy(
             _collate_image_features([instance["image_features"] for instance in batch_list])
         )
+        
+        image_boxes = torch.from_numpy(
+            _collate_image_features([instance["image_boxes"] for instance in batch_list])
+        )
 
         batch: TrainingBatch = {
             "image_id": image_id,
             "image_features": image_features,
+            "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
         }
         return batch
