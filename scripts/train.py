@@ -204,6 +204,8 @@ if __name__ == "__main__":
 
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
+        print(batch.type())
+        print(batch)
         f = open("batchcontent.txt", "a")
         f.write(batch.numpy())
         f.close()
