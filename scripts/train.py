@@ -210,7 +210,7 @@ if __name__ == "__main__":
         for batch_item in batch.items():
             f.write(str(batch_item))
         f.close()
-        print("============== Batch printed===============")
+        print("============== Batch is being printed===============")
         break
         optimizer.zero_grad()
         output_dict = model(batch["image_features"], batch["caption_tokens"])
