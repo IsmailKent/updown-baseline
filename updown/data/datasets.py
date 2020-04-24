@@ -62,6 +62,7 @@ class TrainingDataset(Dataset):
 
     @classmethod
     def from_config(cls, config: Config, **kwargs):
+        print(f"===============WE IN=================")
         r"""Instantiate this class directly from a :class:`~updown.config.Config`."""
         _C = config
         vocabulary = kwargs.pop("vocabulary")
