@@ -205,7 +205,7 @@ if __name__ == "__main__":
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
         
-        print(batch)
+        print(batch['image_boxes'])
         f = open("batchcontent.txt", "a")
         for batch_item in batch.items():
             f.write(str(batch_item))
