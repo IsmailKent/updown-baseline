@@ -76,8 +76,8 @@ class ImageFeaturesReader(object):
                 image_id_np[index]: self.features_h5["num_boxes"][index]
                 for index in range(image_id_np.shape[0])
             }
-        print("========================================================KEYS==============================================")
-        print("Keys: %s" % self.features_h5.keys())
+        print("========================================================KEYS==============================================",flush=True)
+        print("Keys: %s" % self.features_h5.keys(),flush=True)
 
     def __len__(self) -> int:
         return len(self._map)
