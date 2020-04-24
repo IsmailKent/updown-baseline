@@ -8,14 +8,14 @@ import torch
 # Type hint for objects returned by ``TrainingDataset.__getitem__``.
 TrainingInstance = TypedDict(
     "TrainingInstance",
-    {"image_id2": int, "image_features": np.ndarray, "image_boxes":np.ndarray, "caption_tokens": List[int]},
+    {"image_id": int, "image_features": np.ndarray, "image_boxes":np.ndarray, "caption_tokens": List[int]},
 )
 
 # Type hint for objects returned by ``TrainingDataset.collate_fn``.
 TrainingBatch = TypedDict(
     "TrainingBatch",
     {
-        "image_id1": torch.LongTensor,
+        "image_id": torch.LongTensor,
         "image_features": torch.FloatTensor,
         "image_boxes": torch.FloatTensor,
         "caption_tokens": torch.LongTensor,

@@ -93,7 +93,7 @@ class TrainingDataset(Dataset):
         )
 
         item: TrainingInstance = {
-            "image_id1": image_id,
+            "image_id": image_id,
             "image_features": image_features,
             "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
@@ -118,7 +118,7 @@ class TrainingDataset(Dataset):
         )
 
         batch: TrainingBatch = {
-            "image_id1": image_id,
+            "image_id": image_id,
             "image_features": image_features,
             "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
