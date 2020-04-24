@@ -52,6 +52,7 @@ class TrainingDataset(Dataset):
         max_caption_length: int = 20,
         in_memory: bool = True,
     ) -> None:
+        print("initiation Training data set")
         self._vocabulary = vocabulary
         self._image_features_reader = ImageFeaturesReader(image_features_h5path, in_memory)
         self._image_boxes_reader= ImageBoxesReader(image_features_h5path, in_memory)
