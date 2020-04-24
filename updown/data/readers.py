@@ -182,7 +182,7 @@ class CocoCaptionsReader(object):
         # List of (image id, caption) tuples.
         self._captions: List[Tuple[int, List[str]]] = []
         print("why not this?")
-        print(f"Tokenizing captions from {captions_jsonpath}...")
+        print(f"Tokenizing WHHHHAT captions from {captions_jsonpath}...")
         for caption_item in tqdm(captions_json["annotations"]):
 
             caption: str = caption_item["caption"].lower().strip()
