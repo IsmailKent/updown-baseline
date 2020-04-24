@@ -107,6 +107,7 @@ class ImageBoxesReader(object):
     """
 
     def __init__(self, features_h5path: str, in_memory: bool = False) -> None:
+        print("init boxes reader")
         self.features_h5path = features_h5path
         self._in_memory = in_memory
 
@@ -126,6 +127,7 @@ class ImageBoxesReader(object):
 
             features_h5.close()
         else:
+            print("Not in memory")
             self.features_h5 = h5py.File(self.features_h5path, "r")
             image_id_np = np.array(self.features_h5["image_id"])
 
