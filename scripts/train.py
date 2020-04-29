@@ -203,14 +203,6 @@ if __name__ == "__main__":
 
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
-        
-        print(batch)
-        f = open("batchcontent.txt", "a")
-        for batch_item in batch.items():
-            f.write(str(batch_item))
-        f.close()
-        print("============== Batch is being printed===============")
-        break
         optimizer.zero_grad()
         output_dict = model(batch["image_features"], batch["caption_tokens"])
         batch_loss = output_dict["loss"].mean()
