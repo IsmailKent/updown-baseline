@@ -1,7 +1,6 @@
 import argparse
 import os
 from typing import Any, Dict, List
-import json
 import numpy as np
 from tensorboardX import SummaryWriter
 import torch

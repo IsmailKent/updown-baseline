@@ -52,7 +52,6 @@ class ImageFeaturesReader(object):
         # Else values will be integers; indices in the files to read features from.
         self._map: Dict[int, Union[int, np.ndarray]] = {}
         self._num_boxes: Dict[int, int] = {}
-        self._boxes: Dict[int, Union[int, np.ndarray]] = {}
         if self._in_memory:
             print(f"Loading image features from {self.features_h5path}...")
             features_h5 = h5py.File(self.features_h5path, "r")

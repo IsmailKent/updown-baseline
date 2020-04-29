@@ -4,7 +4,8 @@ from typing import Optional
 import torch
 from torch import nn
 from allennlp.nn.util import masked_softmax
-
+from updown.modules.GCN import GCN
+import updown.utils.GraphBuilder as GraphBuilder
 
 class BottomUpTopDownAttention(nn.Module):
     r"""
@@ -32,11 +33,13 @@ class BottomUpTopDownAttention(nn.Module):
             image_feature_size, projection_size, bias=False
         )
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
+        self._graph_network = GCN(nfeat=2048,nhid=64,nclass=2048,dropout=0.25) #nclass is output size
 
     def forward(
         self,
         query_vector: torch.Tensor,
         image_features: torch.Tensor,
+        image_boxes: torch.Tensor,
         image_features_mask: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         r"""
@@ -64,25 +67,35 @@ class BottomUpTopDownAttention(nn.Module):
             image features of each instance in the batch. If ``image_features_mask`` is provided
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
-
+        boxes_adj_matrix = GraphBuilder.get_adj_mat(image_boxes)
+        output_gcn = self._graph_network(image_features,boxes_adj_matrix)
         # shape: (batch_size, projection_size)
+        
         projected_query_vector = self._query_vector_projection_layer(query_vector)
 
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
-        projected_image_features = self._project_image_features(image_features)
+        
+        #projected_image_features = self._project_image_features(image_features)
 
         # Broadcast query_vector as image_features for addition.
         # shape: (batch_size, num_boxes, projection_size)
+        """
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, projected_image_features.size(1), 1
+        )"""
+        projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
+            1, output_gcn.size(1), 1
         )
-
         # shape: (batch_size, num_boxes, 1)
-        attention_logits = self._attention_layer(
+        """attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
+        )"""
+        attention_logits = self._attention_layer(
+            torch.tanh(projected_query_vector + output_gcn)
         )
+        
 
         # shape: (batch_size, num_boxes)
         attention_logits = attention_logits.squeeze(-1)
