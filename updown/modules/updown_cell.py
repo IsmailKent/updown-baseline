@@ -85,6 +85,7 @@ class UpDownCell(nn.Module):
     def forward(
         self,
         image_features: torch.Tensor,
+        image_boxes: torch.Tensor,
         token_embedding: torch.Tensor,
         states: Optional[Dict[str, torch.Tensor]] = None,
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
@@ -140,7 +141,7 @@ class UpDownCell(nn.Module):
 
         # shape: (batch_size, num_boxes)
         attention_weights = self._butd_attention(
-            states["h1"], image_features, image_features_mask=image_features_mask
+            states["h1"], image_features, image_boxes, image_features_mask=image_features_mask
         )
 
         # shape: (batch_size, image_feature_size)

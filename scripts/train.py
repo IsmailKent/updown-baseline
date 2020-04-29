@@ -204,7 +204,7 @@ if __name__ == "__main__":
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
         optimizer.zero_grad()
-        output_dict = model(batch["image_features"], batch["caption_tokens"])
+        output_dict = model(batch["image_features"],batch["image_boxes"], batch["caption_tokens"])
         batch_loss = output_dict["loss"].mean()
 
         batch_loss.backward()

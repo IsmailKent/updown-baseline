@@ -179,6 +179,7 @@ class UpDownCaptioner(nn.Module):
     def forward(  # type: ignore
         self,
         image_features: torch.Tensor,
+        image_boxes: torch.Tensor,
         caption_tokens: Optional[torch.Tensor] = None,
         fsm: torch.Tensor = None,
         num_constraints: torch.Tensor = None,
@@ -240,7 +241,7 @@ class UpDownCaptioner(nn.Module):
                 input_tokens = caption_tokens[:, timestep]
 
                 # shape: (batch_size, num_classes)
-                output_logits, states = self._decode_step(image_features, input_tokens, states)
+                output_logits, states = self._decode_step(image_features, image_boxes, input_tokens, states)
 
                 # list of tensors, shape: (batch_size, 1, vocab_size)
                 step_logits.append(output_logits.unsqueeze(1))
@@ -288,6 +289,7 @@ class UpDownCaptioner(nn.Module):
     def _decode_step(
         self,
         image_features: torch.Tensor,
+        image_boxes: torch.Tensor,
         previous_predictions: torch.Tensor,
         states: Optional[Dict[str, torch.Tensor]] = None,
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
@@ -334,7 +336,7 @@ class UpDownCaptioner(nn.Module):
         token_embeddings = self._embedding_layer(current_input)
 
         # shape: (batch_size * net_beam_size, hidden_size)
-        updown_output, states = self._updown_cell(image_features, token_embeddings, states)
+        updown_output, states = self._updown_cell(image_features, image_boxes, token_embeddings, states)
 
         # shape: (batch_size * net_beam_size, vocab_size)
         updown_output = self._output_projection(updown_output)
