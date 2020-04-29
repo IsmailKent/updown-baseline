@@ -10,8 +10,6 @@ from scipy.linalg import block_diag
 
 
 def calc_distance(box1, box2):
-    print("box1 ",box1)
-    print("box2 ",box2)
     mid_point_1 = torch.Tensor([ box1[2] - box1[0] , box1[3]- box1[1]])
     mid_point_2 = torch.Tensor([ box2[2] - box2[0] , box2[3] - box2[1]])
     return  np.linalg.norm (mid_point_1 - mid_point_2)
