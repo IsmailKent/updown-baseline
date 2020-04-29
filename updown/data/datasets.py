@@ -62,7 +62,6 @@ class TrainingDataset(Dataset):
 
     @classmethod
     def from_config(cls, config: Config, **kwargs):
-        print(f"===============WE IN=================")
         r"""Instantiate this class directly from a :class:`~updown.config.Config`."""
         _C = config
         vocabulary = kwargs.pop("vocabulary")
@@ -99,7 +98,6 @@ class TrainingDataset(Dataset):
             "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
         }
-        print("item: ",item)
         return item
 
     def collate_fn(self, batch_list: List[TrainingInstance]) -> TrainingBatch:
@@ -124,7 +122,6 @@ class TrainingDataset(Dataset):
             "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
         }
-        print("batch: ",batch)
         return batch
 
 

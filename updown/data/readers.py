@@ -75,8 +75,6 @@ class ImageFeaturesReader(object):
                 image_id_np[index]: self.features_h5["num_boxes"][index]
                 for index in range(image_id_np.shape[0])
             }
-        print("========================================================KEYS==============================================",flush=True)
-        print("Keys: %s" % self.features_h5.keys(),flush=True)
 
     def __len__(self) -> int:
         return len(self._map)
@@ -180,8 +178,7 @@ class CocoCaptionsReader(object):
 
         # List of (image id, caption) tuples.
         self._captions: List[Tuple[int, List[str]]] = []
-        print("why not this?")
-        print(f"Tokenizing WHHHHAT captions from {captions_jsonpath}...")
+        print(f"Tokenizing captions from {captions_jsonpath}...")
         for caption_item in tqdm(captions_json["annotations"]):
 
             caption: str = caption_item["caption"].lower().strip()
