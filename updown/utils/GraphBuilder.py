@@ -34,6 +34,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
           
             
 def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.FloatTensor):
+    print("batch boxes shape:",batch_boxes.shape)
     adj_matrices = []
     for idx in range(batch_boxes.shape[0]):
         boxes = batch_boxes[idx]
