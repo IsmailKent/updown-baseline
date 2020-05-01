@@ -43,9 +43,9 @@ class GraphConvolution(Module):
         support = torch.mm(input1, self.weight)
         output = torch.spmm(adj, support)
         if self.bias is not None:
-            return output + self.bias
+            return output + self.bias.cuda()
         else:
-            return output
+            return output.cuda
 
     def __repr__(self):
         return self.__class__.__name__ + ' (' \
