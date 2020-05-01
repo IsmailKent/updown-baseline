@@ -22,9 +22,10 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     A = torch.eye(n_nodes)
     
     for idx1, box1 in enumerate(image_boxes):
-        for idx2, box2 in enumerate(image_boxes):
+        for idx2 in range(idx1,image_boxes.shape[0]):
             if idx1==idx2:
                 continue
+            box2 = image_boxes[idx2]
             dist = calc_distance(box1,box2)
             weight= np.exp(-dist/100)
             A[idx1][idx2] = weight
