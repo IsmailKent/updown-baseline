@@ -68,11 +68,13 @@ class BottomUpTopDownAttention(nn.Module):
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
+        print("here is fine1")
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
+        print("here is fine2")
         # shape: (batch_size, projection_size)
         
         projected_query_vector = self._query_vector_projection_layer(query_vector)
-
+        print("here is fine3")
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
@@ -88,6 +90,7 @@ class BottomUpTopDownAttention(nn.Module):
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, output_gcn.size(1), 1
         )
+        print("here is fine 4")
         # shape: (batch_size, num_boxes, 1)
         """attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
@@ -95,7 +98,7 @@ class BottomUpTopDownAttention(nn.Module):
         attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + output_gcn)
         )
-        
+        print("here is fine 5")
 
         # shape: (batch_size, num_boxes)
         attention_logits = attention_logits.squeeze(-1)
