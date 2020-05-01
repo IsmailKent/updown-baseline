@@ -61,6 +61,7 @@ class GCN(nn.Module):
         self.dropout = dropout
 
     def forward(self, x, adj):
+        self.dropout = self.dropout.cuda()
         x=x.cuda()
         adj  = adj.cuda()
         x = F.relu(self.gc1(x, adj))
