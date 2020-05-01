@@ -43,7 +43,7 @@ def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.Fl
         adj_matrices.append(A)
     print("==============================Here find 13=====================\n\n\n\n")
     batch_adj_Matrix = block_diag(*adj_matrices)
-    #batch_features = batch_features.cpu()
+    batch_features = batch_features.cpu()
     batch_feature_Matrix = block_diag(*batch_features)
     print("here fine 14")
     
