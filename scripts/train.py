@@ -117,7 +117,7 @@ if __name__ == "__main__":
             vocabulary, wordforms_tsvpath=_C.DATA.CBS.WORDFORMS
         )
 
-    train_dataset = TrainingDataset.from_config(_C, vocabulary=vocabulary, in_memory=_A.in_memory)
+    train_dataset = TrainingDataset.from_config(_C, vocabulary=vocabulary, in_memory=False)
     train_dataloader = DataLoader(
         train_dataset,
         batch_size=_C.OPTIM.BATCH_SIZE,
