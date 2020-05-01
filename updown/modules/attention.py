@@ -33,7 +33,7 @@ class BottomUpTopDownAttention(nn.Module):
             image_feature_size, projection_size, bias=False
         )
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
-        self._graph_network = GCN(nfeat=2048,nhid=64,nclass=2048,dropout=0.25) #nclass is output size
+        
 
     def forward(
         self,
@@ -67,6 +67,8 @@ class BottomUpTopDownAttention(nn.Module):
             image features of each instance in the batch. If ``image_features_mask`` is provided
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
+        self._graph_network = GCN(nfeat=2048 * image_features.shape[0],nhid=64,nclass=2048,dropout=0.25) #nclass is output size
+        
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
         print("here is fine1")
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
