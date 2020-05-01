@@ -36,10 +36,10 @@ class GraphConvolution(Module):
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
 
-    def forward(self, input, adj):
-        input = input.cuda()
+    def forward(self, input1, adj):
+        input1 = input1.cuda()
         adj = adj.cuda()
-        support = torch.mm(input, self.weight)
+        support = torch.mm(input1, self.weight)
         output = torch.spmm(adj, support)
         if self.bias is not None:
             return output + self.bias
@@ -61,7 +61,6 @@ class GCN(nn.Module):
         self.dropout = dropout
 
     def forward(self, x, adj):
-        self.dropout = self.dropout.cuda()
         x=x.cuda()
         adj  = adj.cuda()
         x = F.relu(self.gc1(x, adj))
