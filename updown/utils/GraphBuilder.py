@@ -29,7 +29,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
             weight= np.exp(-dist/100)
             A[idx1][idx2] = weight
             A[idx2][idx1]= weight
-            
+    print("give back matrix")       
     return torch.FloatTensor(A)
           
             
