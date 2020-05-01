@@ -67,7 +67,8 @@ class BottomUpTopDownAttention(nn.Module):
             image features of each instance in the batch. If ``image_features_mask`` is provided
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
-        self._graph_network = GCN(nfeat=2048 * image_features.shape[0],nhid=64,nclass=2048,dropout=0.25) #nclass is output size
+        projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
+        self._graph_network = GCN(nfeat=2048 * image_features.shape[0],nhid=64,nclass=projected_query_vector.shape[0],dropout=0.25) #nclass is output size
         
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
         print("here is fine1")
@@ -75,7 +76,7 @@ class BottomUpTopDownAttention(nn.Module):
         print("here is fine2")
         # shape: (batch_size, projection_size)
         
-        projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
+        
         print("here is fine3")
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
