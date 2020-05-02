@@ -91,7 +91,7 @@ class BottomUpTopDownAttention(nn.Module):
             1, projected_image_features.size(1), 1
         )"""
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
-            1, image_features.shape[1], 1
+            1, image_boxes.shape[0]* image_boxes.shape[1], 1
         ).cuda()
         print("here is fine 4")
         # shape: (batch_size, num_boxes, 1)
