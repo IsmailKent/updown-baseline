@@ -43,7 +43,7 @@ def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.Fl
     batch_features = batch_features.cpu()
     batch_features = list(batch_features)
     batch_feature_Matrix = torch.stack(batch_features)
-    print(batch_feature_Matrix)
+    print(batch_feature_Matrix.shape)
     
     
     return torch.FloatTensor(batch_adj_Matrix), torch.FloatTensor(batch_feature_Matrix)
