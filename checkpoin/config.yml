@@ -1,0 +1,30 @@
+DATA:
+  CBS:
+    CLASS_HIERARCHY: data/cbs/class_hierarchy.json
+    INFER_BOXES: data/nocaps_val_oi_detector_boxes.json
+    MAX_GIVEN_CONSTRAINTS: 3
+    MAX_WORDS_PER_CONSTRAINT: 3
+    NMS_THRESHOLD: 0.85
+    WORDFORMS: data/cbs/constraint_wordforms.tsv
+  INFER_CAPTIONS: data/nocaps/nocaps_val_image_info.json
+  INFER_FEATURES: data/nocaps_val_vg_detector_features_adaptive.h5
+  MAX_CAPTION_LENGTH: 20
+  TRAIN_CAPTIONS: data/coco/captions_train2017.json
+  TRAIN_FEATURES: data/coco_train2017_vg_detector_features_adaptive.h5
+  VOCABULARY: data/vocabulary
+MODEL:
+  ATTENTION_PROJECTION_SIZE: 768
+  BEAM_SIZE: 5
+  EMBEDDING_SIZE: 1000
+  HIDDEN_SIZE: 1200
+  IMAGE_FEATURE_SIZE: 2048
+  MIN_CONSTRAINTS_TO_SATISFY: 2
+  USE_CBS: false
+OPTIM:
+  BATCH_SIZE: 250
+  CLIP_GRADIENTS: 12.5
+  LR: 0.015
+  MOMENTUM: 0.9
+  NUM_ITERATIONS: 70000
+  WEIGHT_DECAY: 0.001
+RANDOM_SEED: 0
