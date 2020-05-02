@@ -206,6 +206,7 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         output_dict = model(batch["image_features"],batch["image_boxes"], batch["caption_tokens"])
         batch_loss = output_dict["loss"].mean()
+        print("batch loss: ",batch_loss)
 
         batch_loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), _C.OPTIM.CLIP_GRADIENTS)

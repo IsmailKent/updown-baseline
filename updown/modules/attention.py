@@ -72,15 +72,12 @@ class BottomUpTopDownAttention(nn.Module):
         self._graph_network = GCN(nfeat=2048 * image_features.shape[0],nhid=64,nclass=self._projection_size,dropout=0.25) #nclass is output size
         
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
-        print("here is fine1")
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()
-        print("here is fine2")
         # shape: (batch_size, projection_size)
         
         
-        print("here is fine3")
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
@@ -96,25 +93,19 @@ class BottomUpTopDownAttention(nn.Module):
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, image_boxes.shape[1], 1
         ).cuda()
-        print("here is fine 4")
         # shape: (batch_size, num_boxes, 1)
         """attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
         )"""
-        print(projected_query_vector.shape)
-        print(output_gcn.shape)
         attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + output_gcn)
         ).cuda()
-        print("here is fine 5")
-
         # shape: (batch_size, num_boxes)
         attention_logits = attention_logits.squeeze(-1).cuda()
 
         # `\alpha`s as importance weights for boxes (rows) in the `image_features`.
         # shape: (batch_size, num_boxes)
 
-        print(attention_logits.shape, image_features_mask.shape)
         if image_features_mask is not None:
             attention_weights = masked_softmax(attention_logits, image_features_mask, dim=-1)
         else:
