@@ -110,8 +110,8 @@ class BottomUpTopDownAttention(nn.Module):
 
         # `\alpha`s as importance weights for boxes (rows) in the `image_features`.
         # shape: (batch_size, num_boxes)
-        print(attention_logits.shape)
-        print(image_features)
+
+        print(attention_logits.shape, image_features_mask.shape)
         if image_features_mask is not None:
             attention_weights = masked_softmax(attention_logits, image_features_mask, dim=-1)
         else:
