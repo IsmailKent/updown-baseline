@@ -74,7 +74,7 @@ class BottomUpTopDownAttention(nn.Module):
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
         print("here is fine1")
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
-        output_gcn.resize_((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
+        output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()
         print("here is fine2")
         # shape: (batch_size, projection_size)
