@@ -41,7 +41,9 @@ def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.Fl
         adj_matrices.append(A)
     batch_adj_Matrix = block_diag(*adj_matrices)
     batch_features = batch_features.cpu()
-    batch_feature_Matrix = block_diag(*batch_features)
+    batch_features = list(batch_features)
+    batch_feature_Matrix = torch.stack(batch_features)
+    print(batch_feature_Matrix)
     
     
     return torch.FloatTensor(batch_adj_Matrix), torch.FloatTensor(batch_feature_Matrix)
