@@ -30,22 +30,18 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
             weight= np.exp(-dist/100)
             A[idx1][idx2] = weight
             A[idx2][idx1]= weight
-    print("give back matrix")       
     return torch.FloatTensor(A)
           
             
 def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.FloatTensor):
-    print("batch boxes shape:",batch_boxes.shape)
     adj_matrices = []
     for idx in range(batch_boxes.shape[0]):
         boxes = batch_boxes[idx]
         A = get_adj_mat(boxes)
         adj_matrices.append(A)
-    print("==============================Here find 13=====================\n\n\n\n")
     batch_adj_Matrix = block_diag(*adj_matrices)
     batch_features = batch_features.cpu()
     batch_feature_Matrix = block_diag(*batch_features)
-    print("here fine 14")
     
     
     return torch.FloatTensor(batch_adj_Matrix), torch.FloatTensor(batch_feature_Matrix)
