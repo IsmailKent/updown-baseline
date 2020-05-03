@@ -15,7 +15,6 @@ Loops: Whenever you think you need a loop stop and think. Most of the time you d
 Memory allocation: Whenever you know the size of an object, preallocate space for it. Growing memory, particularly in Python lists, is very slow compared to the alternatives.
 """
 
-import .futures
 
 
 def calc_distance(box1, box2):
