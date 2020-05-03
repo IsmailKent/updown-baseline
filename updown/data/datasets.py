@@ -146,6 +146,7 @@ class EvaluationDataset(Dataset):
 
     def __init__(self, image_features_h5path: str, in_memory: bool = True) -> None:
         self._image_features_reader = ImageFeaturesReader(image_features_h5path, in_memory)
+        self._image_boxes_reader = ImageBoxesReader(image_features_h5path, in_memory)
         self._image_ids = sorted(list(self._image_features_reader._map.keys()))
 
     @classmethod
@@ -160,8 +161,8 @@ class EvaluationDataset(Dataset):
     def __getitem__(self, index: int) -> EvaluationInstance:
         image_id = self._image_ids[index]
         image_features = self._image_features_reader[image_id]
-
-        item: EvaluationInstance = {"image_id": image_id, "image_features": image_features}
+        image_boxes = self._image_boxes_reader[image_id]
+        item: EvaluationInstance = {"image_id": image_id, "image_features": image_features, "image_boxes": image_boxes}
         return item
 
     def collate_fn(self, batch_list: List[EvaluationInstance]) -> EvaluationBatch:
@@ -172,8 +173,11 @@ class EvaluationDataset(Dataset):
         image_features = torch.from_numpy(
             _collate_image_features([instance["image_features"] for instance in batch_list])
         )
+        image_boxes = torch.from_numpy(
+            _collate_image_features([instance["image_boxes"] for instance in batch_list])
+        )
 
-        batch: EvaluationBatch = {"image_id": image_id, "image_features": image_features}
+        batch: EvaluationBatch = {"image_id": image_id, "image_features": image_features, "image_boxes": image_boxes}
         return batch
 
 
