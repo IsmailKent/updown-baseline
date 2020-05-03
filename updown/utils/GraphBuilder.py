@@ -54,7 +54,7 @@ def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.Fl
     print("here ok 3")
     
     
-    return batch_adj_Matrix, batch_feature_Matrix
+    return torch.from_numpy(batch_adj_Matrix), batch_feature_Matrix
     
  
             
