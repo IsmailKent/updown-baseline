@@ -15,8 +15,8 @@ Memory allocation: Whenever you know the size of an object, preallocate space fo
 
 
 def calc_distance(box1, box2):
-    mid_point_1 = torch.Tensor([ box1[2] - box1[0] , box1[3]- box1[1]])
-    mid_point_2 = torch.Tensor([ box2[2] - box2[0] , box2[3] - box2[1]])
+    mid_point_1 = torch.Tensor([box1[0],box1[1]]) + torch.Tensor([ box1[2] - box1[0] , box1[3]- box1[1]])
+    mid_point_2 = torch.Tensor([box2[0],box2[1]]) + torch.Tensor([ box2[2] - box2[0] , box2[3] - box2[1]])
     return  np.linalg.norm (mid_point_1 - mid_point_2)
 
 
@@ -30,14 +30,14 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
                 continue
             box2 = image_boxes[idx2]
             dist = calc_distance(box1,box2)
-            weight= np.exp(-dist/100)
-            A[idx1][idx2] = weight
-            A[idx2][idx1]= weight
+            A[idx1][idx2] = dist
+            A[idx2][idx1]= dist
+    A = torch.exp(-A/500)    
     return torch.FloatTensor(A)
           
             
 def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.FloatTensor):
-    adj_matrices = torch.FloatTensor((batch_boxes.shape[0],batch_boxes.shape[1],batch_boxes.shape[1]))
+    adj_matrices = torch.FloatTensor(batch_boxes.shape[0],batch_boxes.shape[1],batch_boxes.shape[1])
     for idx in range(batch_boxes.shape[0]):
         boxes = batch_boxes[idx]
         A = get_adj_mat(boxes)
