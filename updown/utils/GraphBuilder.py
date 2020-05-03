@@ -8,6 +8,7 @@ import torch
 import numpy as np
 from scipy.linalg import block_diag
 import math
+import threading
 
 """
 Loops: Whenever you think you need a loop stop and think. Most of the time you do not and in fact do not even want one. It is much faster both to write and run code without loops.
@@ -15,6 +16,24 @@ Memory allocation: Whenever you know the size of an object, preallocate space fo
 """
 
 
+
+
+class CalcDistance(threading.Thread):
+   def __init__(self, box1, box2):
+      threading.Thread.__init__(self)
+      self.b1 = box1
+      self.b2 = box2
+      
+   def run(self):
+    box1 = self.b1
+    box2 = self.b2
+    x1 = (box1[2] - box1[0])/2 + box1[0]
+    x2 = (box2[2] - box2[0])/2 + box2[0]
+    y1 = (box1[3] - box1[1])/2 + box1[1]
+    y2 = (box2[3] - box2[1])/2 + box2[1]
+    return  math.sqrt( (x1-x2)**2 + (y1-y2)**2)
+      
+      
 def calc_distance(box1, box2):
     """
     mid_point_1 = torch.Tensor([box1[0],box1[1]]) + torch.Tensor([ box1[2] - box1[0] , box1[3]- box1[1]])
@@ -37,9 +56,12 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     for idx1, box1 in enumerate(image_boxes):
         for idx2 in range(idx1+1,image_boxes.shape[0]):
             box2 = image_boxes[idx2]
-            dist = calc_distance(box1,box2)
+            calcD = CalcDistance(box1,box2)
+            dist = calcD.run()
             A[idx1][idx2] = dist
             A[idx2][idx1]= dist
+            calcD.join()
+            #dist = calc_distance(box1,box2)
     A = torch.exp(-A/500)    
     return A
           
