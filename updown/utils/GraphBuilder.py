@@ -28,21 +28,26 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
         for idx2 in range(idx1,image_boxes.shape[0]):
             if idx1==idx2:
                 continue
+            print("here ok 12")
             box2 = image_boxes[idx2]
             dist = calc_distance(box1,box2) + 0
             A[idx1][idx2] = dist
             A[idx2][idx1]= dist
-    A = torch.exp(-A/500)    
+    A = torch.exp(-A/500)   
+    print("here ok 13")
+
     return torch.FloatTensor(A)
           
             
 def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.FloatTensor):
     adj_matrices = torch.FloatTensor(batch_boxes.shape[0],batch_boxes.shape[1],batch_boxes.shape[1])
+    print("here ok 1")
     for idx in range(batch_boxes.shape[0]):
         boxes = batch_boxes[idx]
         A = get_adj_mat(boxes)
         adj_matrices[idx] = A.squeeze()
     batch_adj_Matrix = block_diag(*adj_matrices)
+    print("here ok 2")
     batch_features = list(batch_features)
     batch_features = torch.cat(batch_features)
     batch_feature_Matrix = torch.stack(list(batch_features))
