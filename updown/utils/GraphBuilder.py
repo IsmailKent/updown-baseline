@@ -15,7 +15,7 @@ Loops: Whenever you think you need a loop stop and think. Most of the time you d
 Memory allocation: Whenever you know the size of an object, preallocate space for it. Growing memory, particularly in Python lists, is very slow compared to the alternatives.
 """
 
-import concurrent.futures
+import .futures
 
 
 def calc_distance(box1, box2):
@@ -24,28 +24,27 @@ def calc_distance(box1, box2):
     mid_point_2 = torch.Tensor([box2[0],box2[1]]) + torch.Tensor([ box2[2] - box2[0] , box2[3] - box2[1]])
     return  math.sqrt( (mid_point_1[0]-mid_point_2[0])**2 + (mid_point_1[1]-mid_point_2[1])**2)
     """
-    
+    """
     x1 = (box1[2] - box1[0])/2 + box1[0]
     x2 = (box2[2] - box2[0])/2 + box2[0]
     y1 = (box1[3] - box1[1])/2 + box1[1]
     y2 = (box2[3] - box2[1])/2 + box2[1]
     return  math.sqrt( (x1-x2)**2 + (y1-y2)**2)
+    """
+    return 0
                       
     
     
 def get_adj_mat(image_boxes:  torch.FloatTensor):
     n_nodes = image_boxes.shape[0]
     A = torch.eye(n_nodes)
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-    
-    
-        for idx1, box1 in enumerate(image_boxes):
-            for idx2 in range(idx1+1,image_boxes.shape[0]):
-                box2 = image_boxes[idx2]
-                future = executor.submit(calc_distance, box1,box2)
-                dist = future.result()
-                A[idx1][idx2] = dist
-                A[idx2][idx1]= dist
+    for idx1, box1 in enumerate(image_boxes):
+        for idx2 in range(idx1+1,image_boxes.shape[0]):
+            box2 = image_boxes[idx2]
+            dist = calc_distance()
+            A[idx1][idx2] = dist
+            A[idx2][idx1]= dist
+            calcD.join()
             #dist = calc_distance(box1,box2)
     A = torch.exp(-A/500)    
     return A
