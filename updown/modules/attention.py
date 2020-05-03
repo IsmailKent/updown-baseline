@@ -72,11 +72,15 @@ class BottomUpTopDownAttention(nn.Module):
         self._graph_network = GCN(nfeat=2048,nhid=64,nclass=self._projection_size,dropout=0.25) #nclass is output size
         
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
+        print("here ok 4")
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
+        print("here ok 5")
+
         output_gcn = output_gcn.cuda()
         # shape: (batch_size, projection_size)
-        
+        print("here ok 6s")
+
         
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
@@ -93,6 +97,8 @@ class BottomUpTopDownAttention(nn.Module):
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, image_boxes.shape[1], 1
         ).cuda()
+        print("here ok 7")
+
         # shape: (batch_size, num_boxes, 1)
         """attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
