@@ -72,11 +72,8 @@ class BottomUpTopDownAttention(nn.Module):
         self._graph_network = GCN(nfeat=2048,nhid=64,nclass=self._projection_size,dropout=0.25) #nclass is output size
         
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
-        print("31")
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
-        print("32")
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
-        print("3")
         output_gcn = output_gcn.cuda()
         # shape: (batch_size, projection_size)
 
