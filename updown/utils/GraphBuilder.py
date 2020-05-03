@@ -41,7 +41,7 @@ def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.Fl
     for idx in range(batch_boxes.shape[0]):
         boxes = batch_boxes[idx]
         A = get_adj_mat(boxes)
-        adj_matrices[idx] = A
+        adj_matrices[idx] = A.squeeze()
     batch_adj_Matrix = block_diag(*adj_matrices)
     batch_features = list(batch_features)
     batch_features = torch.cat(batch_features)
