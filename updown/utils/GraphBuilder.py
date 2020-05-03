@@ -57,7 +57,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
         for idx2 in range(idx1+1,image_boxes.shape[0]):
             box2 = image_boxes[idx2]
             calcD = CalcDistance(box1,box2)
-            dist = calcD.run()
+            dist = calcD.start()
             A[idx1][idx2] = dist
             A[idx2][idx1]= dist
             calcD.join()
