@@ -29,7 +29,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
             if idx1==idx2:
                 continue
             box2 = image_boxes[idx2]
-            dist = calc_distance(box1,box2)
+            dist = calc_distance(box1,box2) + 0
             A[idx1][idx2] = dist
             A[idx2][idx1]= dist
     A = torch.exp(-A/500)    
