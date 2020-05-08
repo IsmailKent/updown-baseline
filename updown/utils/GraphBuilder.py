@@ -23,9 +23,9 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     center = torch.zeros(image_boxes.shape[0],2).type_as(image_boxes)
     center[:,0] = (image_boxes[:,2]-image_boxes[:,0])/2 + image_boxes[:,0]
     center[:,1] = (image_boxes[:,3]-image_boxes[:,1])/2 + image_boxes[:,1]
-    x2 = torch.square(center).sum(-1).view(N,1).repeat(1,N) # shape is (N,N)
-    y2 = torch.square(center).sum(-1).view(1,N).repeat(N,1) # shape is (N,N)
-    xy = torch.mm(center,center.t()) # shape is (N,N)
+    x2 = torch.from_numpy(torch.square(center).sum(-1).view(N,1).repeat(1,N)).cuda() # shape is (N,N)
+    y2 = torch.from_numpy(torch.square(center).sum(-1).view(1,N).repeat(N,1)).cuda() # shape is (N,N)
+    xy = torch.mm(center,center.t()).cuda() # shape is (N,N)
     dists = torch.sqrt(x2 + y2 - 2*xy) + torch.eye(N)# shape is (N, N)
     A = torch.exp(-dists)   
     print("dists",dists)
