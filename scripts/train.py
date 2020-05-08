@@ -229,8 +229,6 @@ if __name__ == "__main__":
                 for batch in tqdm(val_dataloader):
                     # keys: {"image_id", "image_features"}
                     batch = {key: value.to(device) for key, value in batch.items()}
-                    print(batch["image_features"])
-                    print(batch["image_boxes"])
                     with torch.no_grad():
                         # shape: (batch_size, max_caption_length)
                         # Pass finite state machine and number of constraints if using CBS.
