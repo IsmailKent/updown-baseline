@@ -8,7 +8,7 @@ Created on Wed Apr 22 13:02:10 2020
 
 import h5py
 
-filename = '../data/nocaps_val_vg_detector_features_adaptive.h5'
+filename = '../data/coco_train2017_vg_detector_features_adaptive.h5'
 
 with h5py.File(filename, 'r') as f:
     # List all groups
