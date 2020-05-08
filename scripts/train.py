@@ -209,8 +209,6 @@ if __name__ == "__main__":
         print("batch loss: ",batch_loss)
 
         batch_loss.backward()
-        for m in model.parameters():
-            print(m, type(m))
         model = model.cuda()
         nn.utils.clip_grad_norm_(model.parameters(), _C.OPTIM.CLIP_GRADIENTS)
 
