@@ -209,6 +209,7 @@ if __name__ == "__main__":
         print("batch loss: ",batch_loss)
 
         batch_loss.backward()
+        print(model.parameter())
         nn.utils.clip_grad_norm_(model.parameters(), _C.OPTIM.CLIP_GRADIENTS)
 
         optimizer.step()
