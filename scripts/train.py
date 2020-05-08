@@ -209,8 +209,9 @@ if __name__ == "__main__":
         print("batch loss: ",batch_loss)
 
         batch_loss.backward()
-        print(model.parameters())
-        nn.utils.clip_grad_norm_(model.parameters().cuda(), _C.OPTIM.CLIP_GRADIENTS)
+        for m in model.parameters():
+            print(m, type(m))
+        nn.utils.clip_grad_norm_(model.parameters(), _C.OPTIM.CLIP_GRADIENTS)
 
         optimizer.step()
         lr_scheduler.step()
