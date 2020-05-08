@@ -316,7 +316,6 @@ class UpDownCaptioner(nn.Module):
         net_beam_size = 1
 
         # Expand and repeat image features while doing beam search (during inference).
-        print(previous_predictions)
         if not self.training and image_features.size(0) != previous_predictions.size(0):
 
             batch_size, num_boxes, image_feature_size = image_features.size()
