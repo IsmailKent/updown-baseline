@@ -26,10 +26,9 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     x2 = torch.square(center).sum(-1).view(N,1).repeat(1,N).cuda() # shape is (N,N)
     y2 = torch.square(center).sum(-1).view(1,N).repeat(N,1).cuda() # shape is (N,N)
     xy = torch.mm(center,center.t()).cuda() # shape is (N,N)
-    dists = torch.sqrt(x2 + y2 - 2*xy) + torch.eye(N)# shape is (N, N)
+    dists = torch.sqrt(x2 + y2 - 2*xy) + torch.ones((N,N)).cuda()# shape is (N, N)
     A = torch.exp(-dists)   
-    print("dists",dists)
-    print("A",A)
+    
     return A
           
             
@@ -39,7 +38,6 @@ def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.Fl
         boxes = batch_boxes[idx]
         A = get_adj_mat(boxes)
         adj_matrices[idx] = A.squeeze()
-        break
     batch_adj_Matrix = torch.from_numpy(block_diag(*adj_matrices))
     batch_features = list(batch_features)
     batch_features = torch.cat(batch_features)
