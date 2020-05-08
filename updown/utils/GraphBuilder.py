@@ -28,6 +28,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     xy = torch.mm(center,center.t()).cuda() # shape is (N,N)
     dists = torch.sqrt(x2 + y2 - 2*xy) + torch.ones((N,N)).cuda()# shape is (N, N)
     A = torch.exp(-dists)
+    A[torch.isnan(A)]=0
     if (torch.isnan(A).any()):
         print("NAN")
     return A
