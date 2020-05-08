@@ -210,7 +210,7 @@ if __name__ == "__main__":
 
         batch_loss.backward()
         print(model.parameters())
-        nn.utils.clip_grad_norm_(model.parameters(), _C.OPTIM.CLIP_GRADIENTS)
+        nn.utils.clip_grad_norm_(model.parameters().cuda(), _C.OPTIM.CLIP_GRADIENTS)
 
         optimizer.step()
         lr_scheduler.step()
