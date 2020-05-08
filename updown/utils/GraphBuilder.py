@@ -7,8 +7,6 @@ Created on Sat Apr 25 11:13:58 2020
 import torch 
 import numpy as np
 from scipy.linalg import block_diag
-import math
-import threading
 
 """
 Loops: Whenever you think you need a loop stop and think. Most of the time you do not and in fact do not even want one. It is much faster both to write and run code without loops.
@@ -28,7 +26,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     x2 = torch.square(center).sum(-1).view(N,1).repeat(1,N) # shape is (N,N)
     y2 = torch.square(center).sum(-1).view(1,N).repeat(N,1) # shape is (N,N)
     xy = torch.mm(center,center.t()) # shape is (N,N)
-    dists = np.sqrt(x2 + y2 - 2*xy) # shape is (N, N)
+    dists = torch.sqrt(x2 + y2 - 2*xy) # shape is (N, N)
     A = torch.exp(-dists/500)    
     return A
           
