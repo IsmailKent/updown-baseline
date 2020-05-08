@@ -26,13 +26,10 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     x2 = torch.square(center).sum(-1).view(N,1).repeat(1,N) # shape is (N,N)
     y2 = torch.square(center).sum(-1).view(1,N).repeat(N,1) # shape is (N,N)
     xy = torch.mm(center,center.t()) # shape is (N,N)
-    dists = torch.sqrt(x2 + y2 - 2*xy) # shape is (N, N)
+    dists = torch.sqrt(x2 + y2 - 2*xy) + torch.eye(N)# shape is (N, N)
     A = torch.exp(-dists)   
-    print(x2)
-    print(y2)
-    print(xy)
-    print(dists)
-    print(A)
+    print("dists",dists)
+    print("A",A)
     return A
           
             
