@@ -214,7 +214,7 @@ class UpDownCaptioner(nn.Module):
             ``{"predictions"}`` or ``{"loss"}``.
         """
         batch_size, num_boxes, image_feature_size = image_features.size()
-
+        print("forward" , image_features.shape[0]==image_boxes.shape[0])
         # Initialize states at zero-th timestep.
         states = None
 
@@ -336,6 +336,7 @@ class UpDownCaptioner(nn.Module):
         token_embeddings = self._embedding_layer(current_input)
 
         # shape: (batch_size * net_beam_size, hidden_size)
+        print(image_features.shape[0]==image_boxes.shape[0])
         updown_output, states = self._updown_cell(image_features, image_boxes, token_embeddings, states)
 
         # shape: (batch_size * net_beam_size, vocab_size)
