@@ -227,10 +227,6 @@ if __name__ == "__main__":
                 predictions: List[Prediction] = []
 
                 for batch in tqdm(val_dataloader):
-                    print(type(batch))
-                    for key, value in batch.items():
-                        print(key)
-                        print(value)
                     # keys: {"image_id", "image_features"}
                     batch = {key: value.to(device) for key, value in batch.items()}
                     with torch.no_grad():
