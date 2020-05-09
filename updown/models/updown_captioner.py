@@ -214,7 +214,6 @@ class UpDownCaptioner(nn.Module):
             ``{"predictions"}`` or ``{"loss"}``.
         """
         batch_size, num_boxes, image_feature_size = image_features.size()
-        print("forward" , image_features.shape[0]==image_boxes.shape[0])
         # Initialize states at zero-th timestep.
         states = None
 
@@ -262,6 +261,7 @@ class UpDownCaptioner(nn.Module):
 
             # Add image features as a default argument to match callable signature acceptable by
             # beam search class (previous predictions and states only).
+            print(image_features.shape, image_boxes.shape[0])
             beam_decode_step = functools.partial(self._decode_step,image_features,image_boxes)
 
             # shape (all_top_k_predictions): (batch_size, net_beam_size, num_decoding_steps)
@@ -337,7 +337,6 @@ class UpDownCaptioner(nn.Module):
         token_embeddings = self._embedding_layer(current_input)
 
         # shape: (batch_size * net_beam_size, hidden_size)
-        print(image_features.shape[0]==image_boxes.shape[0])
         updown_output, states = self._updown_cell(image_features, image_boxes, token_embeddings, states)
 
         # shape: (batch_size * net_beam_size, vocab_size)
