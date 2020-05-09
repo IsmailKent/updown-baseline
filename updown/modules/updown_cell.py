@@ -141,7 +141,7 @@ class UpDownCell(nn.Module):
         # shape: (batch_size, num_boxes)
         print("butd", image_features.shape, image_boxes.shape)
         attention_weights = self._butd_attention(
-            states = states["h1"], image_features= image_features, image_boxes = image_boxes,
+            query_vector = states["h1"], image_features= image_features, image_boxes = image_boxes,
             image_features_mask=image_features_mask
         )
 
