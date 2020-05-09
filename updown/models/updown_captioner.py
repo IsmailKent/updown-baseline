@@ -278,7 +278,7 @@ class UpDownCaptioner(nn.Module):
                 )
             else:
                 all_top_k_predictions, log_probabilities = self._beam_search.search(
-                   start_predictions = start_predictions, start_state = states, step= beam_decode_step
+                   start_predictions = start_predictions, start_state = states, step= beam_decode_step, fsm = fsm
                 )
                 best_beam = select_best_beam(all_top_k_predictions, log_probabilities)
 
