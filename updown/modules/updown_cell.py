@@ -115,7 +115,7 @@ class UpDownCell(nn.Module):
             is the updated state "h2", and updated states (h1, c1), (h2, c2).
         """
         batch_size = image_features.size(0)
-
+        print(image_features.shape[0]== image_boxes.shape[0])
         # Average pooling of image features happens only at the first timestep. LRU cache
         # saves compute by not executing the function call in subsequent timesteps.
         # shape: (batch_size, image_feature_size), (batch_size, num_boxes)
