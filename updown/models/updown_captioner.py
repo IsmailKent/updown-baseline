@@ -240,6 +240,7 @@ class UpDownCaptioner(nn.Module):
                 input_tokens = caption_tokens[:, timestep]
 
                 # shape: (batch_size, num_classes)
+                print("decode step")
                 output_logits, states = self._decode_step(image_features = image_features, image_boxes = image_boxes,
                                                           previous_predictions = input_tokens, states = states)
 
@@ -261,7 +262,7 @@ class UpDownCaptioner(nn.Module):
 
             # Add image features as a default argument to match callable signature acceptable by
             # beam search class (previous predictions and states only).
-            print(image_features.shape, image_boxes.shape[0])
+            print(image_features.shape, image_boxes.shape)
             beam_decode_step = functools.partial(self._decode_step,image_features,image_boxes)
 
             # shape (all_top_k_predictions): (batch_size, net_beam_size, num_decoding_steps)
@@ -294,6 +295,9 @@ class UpDownCaptioner(nn.Module):
         previous_predictions: torch.Tensor,
         states: Optional[Dict[str, torch.Tensor]] = None,
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+        
+        print(image_features.shape, image_boxes.shape)
+
         r"""
         Given image features, tokens predicted at previous time-step and LSTM states of the
         :class:`~updown.modules.updown_cell.UpDownCell`, take a decoding step. This is also
