@@ -70,10 +70,8 @@ class BottomUpTopDownAttention(nn.Module):
         projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
         
         
-        
+        print(image_boxes.shape[0] == image_features.shape[0])
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
-        print("boxes_adj_matrix", boxes_adj_matrix.shape)
-        print("image_features", image_features.shape)
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()
