@@ -239,7 +239,6 @@ if __name__ == "__main__":
                         batch_predictions = model(
                             image_features = batch["image_features"],
                             image_boxes = batch["image_boxes"],
-                            caption_tokens = None,
                             fsm=batch.get("fsm", None),
                             num_constraints=batch.get("num_constraints", None),
                         )["predictions"]

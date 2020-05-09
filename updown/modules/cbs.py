@@ -124,7 +124,7 @@ class ConstrainedBeamSearch(object):
 
         # shape: start_class_log_probabilities (batch_size, vocab_size)
         # shape: state["h1"], state["c1"]... etc. (batch_size, hidden_size)
-        start_class_log_probabilities, state = step(start_predictions, start_state)
+        start_class_log_probabilities, state = step(previous_predictions = start_predictions, states= start_state)
         vocab_size = start_class_log_probabilities.size(-1)
 
         start_state_predictions = start_class_log_probabilities.view(
@@ -167,7 +167,7 @@ class ConstrainedBeamSearch(object):
             if (last_predictions == self._end_index).all():
                 break
 
-            class_log_probabilities, state = step(last_predictions, state)
+            class_log_probabilities, state = step(previous_predictions = last_predictions, states= state)
             last_predictions_expanded = (
                 last_predictions.view(-1)
                 .unsqueeze(-1)
