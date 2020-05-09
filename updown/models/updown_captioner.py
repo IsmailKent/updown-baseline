@@ -331,6 +331,14 @@ class UpDownCaptioner(nn.Module):
             image_features = image_features.view(
                 batch_size * net_beam_size, num_boxes, image_feature_size
             )
+            
+            # Add (net) beam dimension and repeat image features.
+            image_boxes = image_boxes.unsqueeze(1).repeat(1, net_beam_size, 1, 1)
+
+            # shape: (batch_size * net_beam_size, num_boxes, image_feature_size)
+            image_boxes = image_boxes.view(
+                batch_size * net_beam_size, num_boxes, 4
+            )
 
         # shape: (batch_size * net_beam_size, )
         current_input = previous_predictions
