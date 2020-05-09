@@ -206,7 +206,6 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         output_dict = model(batch["image_features"],batch["image_boxes"], batch["caption_tokens"])
         batch_loss = output_dict["loss"].mean()
-        print("batch loss: ",batch_loss)
 
         batch_loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), _C.OPTIM.CLIP_GRADIENTS)
@@ -229,7 +228,6 @@ if __name__ == "__main__":
                 for batch in tqdm(val_dataloader):
                     # keys: {"image_id", "image_features"}
                     batch = {key: value.to(device) for key, value in batch.items()}
-                    print(batch["image_features"].shape[0],batch["image_boxes"].shape[0])
                        
                     with torch.no_grad():
                         # shape: (batch_size, max_caption_length)
