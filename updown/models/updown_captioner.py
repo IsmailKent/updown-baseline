@@ -267,7 +267,7 @@ class UpDownCaptioner(nn.Module):
             # shape (log_probabilities): (batch_size, net_beam_size)
             if self._use_cbs:
                 all_top_k_predictions, log_probabilities = self._beam_search.search(
-                    start_predictions, states, beam_decode_step, fsm
+                    previous_predictions = start_predictions,  states = states, step = beam_decode_step, fsm =  fsm
                 )
                 best_beam = select_best_beam_with_constraints(
                     all_top_k_predictions,
@@ -277,7 +277,7 @@ class UpDownCaptioner(nn.Module):
                 )
             else:
                 all_top_k_predictions, log_probabilities = self._beam_search.search(
-                    start_predictions, states, beam_decode_step
+                   previous_predictions = start_predictions, states = states, step= beam_decode_step
                 )
                 best_beam = select_best_beam(all_top_k_predictions, log_probabilities)
 
