@@ -240,7 +240,6 @@ class UpDownCaptioner(nn.Module):
                 input_tokens = caption_tokens[:, timestep]
 
                 # shape: (batch_size, num_classes)
-                print("decode step")
                 output_logits, states = self._decode_step(image_features = image_features, image_boxes = image_boxes,
                                                           previous_predictions = input_tokens, states = states)
 
