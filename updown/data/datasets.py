@@ -158,26 +158,39 @@ class EvaluationDataset(Dataset):
     def __len__(self) -> int:
         return len(self._image_ids)
 
-    def __getitem__(self, index: int) -> EvaluationInstance:
+    def __getitem__(self, index: int) -> TrainingInstance:
         image_id = self._image_ids[index]
         image_features = self._image_features_reader[image_id]
         image_boxes = self._image_boxes_reader[image_id]
-        item: EvaluationInstance = {"image_id": image_id, "image_features": image_features, "image_boxes": image_boxes}
+
+
+
+        item: EvaluationInstance = {
+            "image_id": image_id,
+            "image_features": image_features,
+            "image_boxes":image_boxes,
+        }
         return item
 
-    def collate_fn(self, batch_list: List[EvaluationInstance]) -> EvaluationBatch:
+    def collate_fn(self, batch_list: List[TrainingInstance]) -> TrainingBatch:
         # Convert lists of ``image_id``s and ``caption_tokens``s as tensors.
         image_id = torch.tensor([instance["image_id"] for instance in batch_list]).long()
+        
 
         # Pad adaptive image features in the batch.
         image_features = torch.from_numpy(
             _collate_image_features([instance["image_features"] for instance in batch_list])
         )
+        
         image_boxes = torch.from_numpy(
             _collate_image_features([instance["image_boxes"] for instance in batch_list])
         )
 
-        batch: EvaluationBatch = {"image_id": image_id, "image_features": image_features, "image_boxes": image_boxes}
+        batch: EvaluationBatch = {
+            "image_id": image_id,
+            "image_features": image_features,
+            "image_boxes":image_boxes,
+        }
         return batch
 
 

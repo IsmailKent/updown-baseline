@@ -68,11 +68,8 @@ class BottomUpTopDownAttention(nn.Module):
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
         projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
-        print("before build")
-        print(image_features.shape , image_boxes.shape)
+
         boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
-        print("after build")
-        print(image_features.shape , boxes_adj_matrix.shape)
         output_gcn = self._graph_network(image_features,boxes_adj_matrix)
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()

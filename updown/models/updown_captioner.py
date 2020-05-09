@@ -296,7 +296,6 @@ class UpDownCaptioner(nn.Module):
         states: Optional[Dict[str, torch.Tensor]] = None,
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         
-        print(image_features.shape, image_boxes.shape)
 
         r"""
         Given image features, tokens predicted at previous time-step and LSTM states of the
