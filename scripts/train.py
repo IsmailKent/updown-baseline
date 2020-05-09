@@ -240,7 +240,6 @@ if __name__ == "__main__":
                             fsm=batch.get("fsm", None),
                             num_constraints=batch.get("num_constraints", None),
                         )["predictions"]
-                        print("so the error happens before here")
 
                     for i, image_id in enumerate(batch["image_id"]):
                         instance_predictions = batch_predictions[i, :]
