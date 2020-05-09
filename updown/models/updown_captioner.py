@@ -262,8 +262,8 @@ class UpDownCaptioner(nn.Module):
 
             # Add image features as a default argument to match callable signature acceptable by
             # beam search class (previous predictions and states only).
-            #beam_decode_step = functools.partial(self._decode_step, image_features = image_features,image_boxes = image_boxes)
-            beam_decode_step = self._decode_step
+            beam_decode_step = functools.partial(self._decode_step,  image_features, image_boxes)
+
             # shape (all_top_k_predictions): (batch_size, net_beam_size, num_decoding_steps)
             # shape (log_probabilities): (batch_size, net_beam_size)
             if self._use_cbs:
