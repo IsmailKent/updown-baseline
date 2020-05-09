@@ -227,7 +227,8 @@ if __name__ == "__main__":
                 predictions: List[Prediction] = []
 
                 for batch in tqdm(val_dataloader):
-                    for key, value in batch:
+                    print(type(batch))
+                    for key, value in batch.items():
                         print(key)
                         print(value)
                     # keys: {"image_id", "image_features"}
