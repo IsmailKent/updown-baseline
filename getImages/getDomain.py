@@ -18,6 +18,7 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
     for cat in data['categories']:
         if cat['id'] in domain_list:
             ids.append(cat['id'])
+    print(domain_list)
     print(len(domain_list),len(ids))
     d = {}
     for i in range(5000):
