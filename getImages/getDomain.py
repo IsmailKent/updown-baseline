@@ -13,7 +13,7 @@ classes = []
 
 with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r') as domain:
     data = json.load(json_file)
-    domain_list = domain.readlines()
+    domain_list = [line.rstrip() for line in domain]
     ids = []
     for cat in data['categories']:
         if cat['id'] in domain_list:
