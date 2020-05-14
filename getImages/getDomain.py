@@ -31,8 +31,8 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
     for cat in data['categories']:
         if cat['id'] in classes:
             print(cat['name'])
-    """
+    
     for key, value in d.items():
         if (all(item in value for item in ids)):
             print(key)
-      """      
+          
