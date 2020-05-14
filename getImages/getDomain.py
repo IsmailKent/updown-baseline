@@ -33,6 +33,6 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
             print(cat['name'])
     
     for key, value in d.items():
-        if (all(item in value for item in ids)):
+        if (all(item in ids for item in value)):
             print(key)
           
