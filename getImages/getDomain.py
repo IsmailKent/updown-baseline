@@ -20,5 +20,5 @@ with open(file_source) as json_file:
     print(classes)
     for cat in data['categories']:
         if cat['id'] in classes:
-            print(cat['supercategory'])
+            print(cat['name'])
             
