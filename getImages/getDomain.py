@@ -6,7 +6,6 @@ Created on Thu May 14 16:55:48 2020
 """
 
 import json
-import os
 
 ID = int(input(("enter image id: ")))
 
