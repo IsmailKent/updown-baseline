@@ -16,9 +16,12 @@ classes = []
 with open(file_source) as json_file:
     data = json.load(json_file)
     for ann in data['annotations']:
-        if (ann['image_d']==ID):
+        if (ann['image_id']==ID):
             classes.append(ann['category_id'])
+    print(classes)
     for cat in data['categories']:
+        print(cat)
+        break
         if cat['id'] in classes:
             print(cat['name'])
             
