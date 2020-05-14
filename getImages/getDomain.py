@@ -8,7 +8,7 @@ Created on Thu May 14 16:55:48 2020
 import json
 import os
 
-ID = input(("enter image id: "))
+ID = int(input(("enter image id: ")))
 
 file_source = "nocaps_val_detections.json"
 
@@ -20,7 +20,6 @@ with open(file_source) as json_file:
             classes.append(ann['category_id'])
     print(classes)
     for cat in data['categories']:
-        print(cat)
         break
         if cat['id'] in classes:
             print(cat['name'])
