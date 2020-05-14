@@ -18,8 +18,8 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
     for cat in data['categories']:
         if cat['name'] in domain_list:
             ids.append(cat['id'])
-    print(domain_list)
-    print(len(domain_list),len(ids))
+    #print(domain_list)
+    #print(len(domain_list),len(ids))
     d = {}
     for i in range(5000):
         d[i] = []
@@ -27,7 +27,7 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
         d[ann['image_id']].append(ann['category_id'])
         if (ann['image_id']==ID):
             classes.append(ann['category_id'])
-    print(classes)
+    #print(classes)
     for cat in data['categories']:
         if cat['id'] in classes:
             print(cat['name'])
