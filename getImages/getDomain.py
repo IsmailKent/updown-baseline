@@ -22,7 +22,6 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
     d = {}
     for i in range(5000):
         d[i] = []
-    data = json.load(json_file)
     for ann in data['annotations']:
         d[ann['image_id']].append(ann['category_id'])
         if (ann['image_id']==ID):
