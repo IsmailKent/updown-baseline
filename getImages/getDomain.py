@@ -20,7 +20,6 @@ with open(file_source) as json_file:
             classes.append(ann['category_id'])
     print(classes)
     for cat in data['categories']:
-        break
         if cat['id'] in classes:
-            print(cat['name'])
+            print(cat['supercategory'])
             
