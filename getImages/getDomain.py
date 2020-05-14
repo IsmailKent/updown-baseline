@@ -11,7 +11,7 @@ ID = int(input(("enter image id: ")))
 
 file_source = "nocaps_val_detections.json"
 classes = []
-with open(file_source) as json_file, open('domain.txt','r') as domain:
+with open(file_source,'r') as json_file, open('domain.txt','r') as domain:
     data = json.load(json_file)
     domain_list = domain.readlines()
     ids = []
