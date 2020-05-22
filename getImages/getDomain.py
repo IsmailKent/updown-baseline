@@ -21,13 +21,14 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain.txt','r')
     #print(domain_list)
     #print(len(domain_list),len(ids))
     d = {}
-    for i in range(5000):
+    for i in range(4500):
         d[i] = []
     for ann in data['annotations']:
         d[ann['image_id']].append(ann['category_id'])
         if (ann['image_id']==ID):
             classes.append(ann['category_id'])
     #print(classes)
+    
     for cat in data['categories']:
         if cat['id'] in classes:
             print(cat['name'])
