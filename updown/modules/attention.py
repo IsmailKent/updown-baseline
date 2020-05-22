@@ -73,8 +73,8 @@ class BottomUpTopDownAttention(nn.Module):
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()
         # shape: (batch_size, projectionsize)
-
-        
+        concatenated_features = torch.cat((image_features,output_gcn),dim=2)
+        projected_image_features = self._project_image_features(concatenated_features)
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
@@ -96,7 +96,7 @@ class BottomUpTopDownAttention(nn.Module):
             torch.tanh(projected_query_vector + projected_image_features)
         )"""
         attention_logits = self._attention_layer(
-            torch.tanh(projected_query_vector + output_gcn)
+            torch.tanh(projected_query_vector + projected_image_features)
         ).cuda()
         # shape: (batch_size, num_boxes)
         attention_logits = attention_logits.squeeze(-1).cuda()
