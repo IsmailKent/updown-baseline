@@ -35,6 +35,8 @@ class BottomUpTopDownAttention(nn.Module):
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
         self._graph_network = GCN(nfeat=2048,nhid=64,nclass=self._projection_size,dropout=0.25).cuda() #nclass is output size
 
+
+        
     def forward(
         self,
         query_vector: torch.Tensor,
@@ -67,6 +69,7 @@ class BottomUpTopDownAttention(nn.Module):
             image features of each instance in the batch. If ``image_features_mask`` is provided
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
+        """
         projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
         boxes_adj_matrix , graph_image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
         output_gcn = self._graph_network(graph_image_features,boxes_adj_matrix)
@@ -84,17 +87,21 @@ class BottomUpTopDownAttention(nn.Module):
         # Broadcast query_vector as image_features for addition.
         # shape: (batch_size, num_boxes, projection_size)
         """
+        """
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, projected_image_features.size(1), 1
         )"""
+        
+        """
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, image_boxes.shape[1], 1
         ).cuda()
-
+        """
         # shape: (batch_size, num_boxes, 1)
         """attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
         )"""
+        """
         attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
         ).cuda()
@@ -110,6 +117,8 @@ class BottomUpTopDownAttention(nn.Module):
             attention_weights = torch.softmax(attention_logits, dim=-1)
 
         return attention_weights
+        """
+        return torch.ones((image_features.shape[0],image_features.shape[1])) / (image_features.shape[0]*image_features.shape[1])
 
     @lru_cache(maxsize=10)
     def _project_image_features(self, image_features: torch.Tensor) -> torch.Tensor:
