@@ -118,7 +118,7 @@ class BottomUpTopDownAttention(nn.Module):
 
         return attention_weights
         """
-        return torch.ones((image_features.shape[0],image_features.shape[1])) / (image_features.shape[0]*image_features.shape[1])
+        return torch.ones((image_features.shape[0],image_features.shape[1])).cuda() /(image_features.shape[0]*image_features.shape[1])
 
     @lru_cache(maxsize=10)
     def _project_image_features(self, image_features: torch.Tensor) -> torch.Tensor:
