@@ -35,8 +35,6 @@ class BottomUpTopDownAttention(nn.Module):
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
         self._graph_network = GCN(nfeat=2048,nhid=64,nclass=self._projection_size,dropout=0.25).cuda() #nclass is output size
 
-
-        
     def forward(
         self,
         query_vector: torch.Tensor,
@@ -44,6 +42,10 @@ class BottomUpTopDownAttention(nn.Module):
         image_boxes: torch.Tensor,
         image_features_mask: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
+        
+        r = torch.rand((image_features.shape[0],image_features.shape[1])).cuda()
+        r/= torch.sum(r)
+        return r
         r"""
         Compute attention weights over image features by applying bottom-up top-down attention
         over image features, using the query vector. Query vector is typically the output of
@@ -78,6 +80,7 @@ class BottomUpTopDownAttention(nn.Module):
         # shape: (batch_size, projectionsize)
         concatenated_features = torch.cat((image_features,output_gcn),dim=2)
         projected_image_features = self._project_image_features(concatenated_features)
+        """
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
@@ -87,11 +90,9 @@ class BottomUpTopDownAttention(nn.Module):
         # Broadcast query_vector as image_features for addition.
         # shape: (batch_size, num_boxes, projection_size)
         """
-        """
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, projected_image_features.size(1), 1
         )"""
-        
         """
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, image_boxes.shape[1], 1
@@ -118,7 +119,6 @@ class BottomUpTopDownAttention(nn.Module):
 
         return attention_weights
         """
-        return torch.ones((image_features.shape[0],image_features.shape[1])).cuda() /(image_features.shape[0]*image_features.shape[1])
 
     @lru_cache(maxsize=10)
     def _project_image_features(self, image_features: torch.Tensor) -> torch.Tensor:
