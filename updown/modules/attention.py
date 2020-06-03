@@ -35,6 +35,13 @@ class BottomUpTopDownAttention(nn.Module):
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
         self._graph_network = GCN(nfeat=2048,nhid=64,nclass=self._projection_size,dropout=0.25).cuda() #nclass is output size
 
+    def get_box_areas(self,image_boxes: torch.Tensor):
+        image_boxes = image_boxes.reshape(-1,4)
+        x = image_boxes[:,2] - image_boxes[:,0]
+        y = image_boxes[:,3] - image_boxes[:,1]
+        return (x*y).reshape(-1,1)
+    
+    
     def forward(
         self,
         query_vector: torch.Tensor,
@@ -67,13 +74,17 @@ class BottomUpTopDownAttention(nn.Module):
             image features of each instance in the batch. If ``image_features_mask`` is provided
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
+
         projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
+        areas = self.get_box_areas(image_boxes).reshape(image_boxes.shape[0],image_boxes.shape[1],1)
+        """
         boxes_adj_matrix , graph_image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
         output_gcn = self._graph_network(graph_image_features,boxes_adj_matrix)
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()
+        """
         # shape: (batch_size, projectionsize)
-        concatenated_features = torch.cat((image_features,output_gcn),dim=2)
+        concatenated_features = torch.cat((image_features,areas),dim=2)
         projected_image_features = self._project_image_features(concatenated_features)
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
