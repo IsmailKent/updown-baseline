@@ -42,10 +42,6 @@ class BottomUpTopDownAttention(nn.Module):
         image_boxes: torch.Tensor,
         image_features_mask: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
-        
-        r = torch.rand((image_features.shape[0],image_features.shape[1])).cuda()
-        r/= torch.sum(r)
-        return r
         r"""
         Compute attention weights over image features by applying bottom-up top-down attention
         over image features, using the query vector. Query vector is typically the output of
@@ -71,7 +67,6 @@ class BottomUpTopDownAttention(nn.Module):
             image features of each instance in the batch. If ``image_features_mask`` is provided
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
-        """
         projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
         boxes_adj_matrix , graph_image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
         output_gcn = self._graph_network(graph_image_features,boxes_adj_matrix)
@@ -80,7 +75,6 @@ class BottomUpTopDownAttention(nn.Module):
         # shape: (batch_size, projectionsize)
         concatenated_features = torch.cat((image_features,output_gcn),dim=2)
         projected_image_features = self._project_image_features(concatenated_features)
-        """
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
@@ -93,16 +87,14 @@ class BottomUpTopDownAttention(nn.Module):
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, projected_image_features.size(1), 1
         )"""
-        """
         projected_query_vector = projected_query_vector.unsqueeze(1).repeat(
             1, image_boxes.shape[1], 1
         ).cuda()
-        """
+
         # shape: (batch_size, num_boxes, 1)
         """attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
         )"""
-        """
         attention_logits = self._attention_layer(
             torch.tanh(projected_query_vector + projected_image_features)
         ).cuda()
@@ -118,7 +110,6 @@ class BottomUpTopDownAttention(nn.Module):
             attention_weights = torch.softmax(attention_logits, dim=-1)
 
         return attention_weights
-        """
 
     @lru_cache(maxsize=10)
     def _project_image_features(self, image_features: torch.Tensor) -> torch.Tensor:
