@@ -30,7 +30,7 @@ class BottomUpTopDownAttention(nn.Module):
         self._projection_size = projection_size
         self._query_vector_projection_layer = nn.Linear(query_size, projection_size, bias=False)
         self._image_features_projection_layer = nn.Linear(
-            image_feature_size+projection_size, projection_size, bias=False
+            2*image_feature_size, projection_size, bias=False
         )
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
         self._graph_network = GCN(nfeat=image_feature_size,nhid=image_feature_size,nclass=image_feature_size,dropout=0.25).cuda() #nclass is output size
