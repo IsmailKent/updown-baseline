@@ -30,7 +30,7 @@ class BottomUpTopDownAttention(nn.Module):
         self._projection_size = projection_size
         self._query_vector_projection_layer = nn.Linear(query_size, projection_size, bias=False)
         self._image_features_projection_layer = nn.Linear(
-            2*image_feature_size, projection_size, bias=False
+            image_feature_size, projection_size, bias=False
         )
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
         self._graph_network = GCN(nfeat=image_feature_size,nhid=image_feature_size,nclass=image_feature_size,dropout=0.25).cuda() #nclass is output size
@@ -79,7 +79,7 @@ class BottomUpTopDownAttention(nn.Module):
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
         
-        #projected_image_features = self._project_image_features(image_features)
+        projected_image_features = self._project_image_features(output_gcn)
 
         # Broadcast query_vector as image_features for addition.
         # shape: (batch_size, num_boxes, projection_size)
@@ -96,7 +96,7 @@ class BottomUpTopDownAttention(nn.Module):
             torch.tanh(projected_query_vector + projected_image_features)
         )"""
         attention_logits = self._attention_layer(
-            torch.tanh(projected_query_vector + output_gcn)
+            torch.tanh(projected_query_vector + projected_image_features)
         ).cuda()
         # shape: (batch_size, num_boxes)
         attention_logits = attention_logits.squeeze(-1).cuda()
