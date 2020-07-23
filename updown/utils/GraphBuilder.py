@@ -18,7 +18,10 @@ Memory allocation: Whenever you know the size of an object, preallocate space fo
     
     
 def get_adj_mat(image_boxes:  torch.FloatTensor):
+
     N = image_boxes.shape[0]
+    return torch.ones((N,N)).cuda()
+    """
     center = torch.zeros(image_boxes.shape[0],2).type_as(image_boxes)
     center[:,0] = (image_boxes[:,2]-image_boxes[:,0])/2 + image_boxes[:,0]
     center[:,1] = (image_boxes[:,3]-image_boxes[:,1])/2 + image_boxes[:,1]
@@ -31,6 +34,7 @@ def get_adj_mat(image_boxes:  torch.FloatTensor):
     if (torch.isnan(A).any()):
         print("NAN")
     return A
+    """
           
             
 def build_batch_graph(batch_features:  torch.FloatTensor, batch_boxes:  torch.FloatTensor) -> (torch.FloatTensor , torch.FloatTensor):
