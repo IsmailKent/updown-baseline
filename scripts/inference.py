@@ -137,6 +137,7 @@ if __name__ == "__main__":
             # Pass finite state machine and number of constraints if using CBS.
             batch_predictions = model(
                 batch["image_features"],
+                batch["image_boxes"],
                 fsm=batch.get("fsm", None),
                 num_constraints=batch.get("num_constraints", None),
             )["predictions"]
