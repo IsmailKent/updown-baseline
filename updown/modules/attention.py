@@ -12,6 +12,7 @@ class BottomUpTopDownAttention(nn.Module):
     A PyTorch module to compute bottom-up top-down attention
     (`Anderson et al. 2017 <https://arxiv.org/abs/1707.07998>`_). Used in
     :class:`~updown.modules.updown_cell.UpDownCell`
+
     Parameters
     ----------
     query_size: int
@@ -46,6 +47,7 @@ class BottomUpTopDownAttention(nn.Module):
         over image features, using the query vector. Query vector is typically the output of
         attention LSTM in :class:`~updown.modules.updown_cell.UpDownCell`. Both image features
         and query vectors are first projected to a common dimension, that is ``projection_size``.
+
         Parameters
         ----------
         query_vector: torch.Tensor
@@ -57,6 +59,7 @@ class BottomUpTopDownAttention(nn.Module):
         image_features_mask: torch.Tensor
             A mask over image features if ``num_boxes`` are different for each instance. Elements
             where mask is zero are not attended over.
+
         Returns
         -------
         torch.Tensor
@@ -113,6 +116,7 @@ class BottomUpTopDownAttention(nn.Module):
     def _project_image_features(self, image_features: torch.Tensor) -> torch.Tensor:
         r"""
         Project image features to a common dimension for applying attention.
+
         Extended Summary
         ----------------
         For a single training/evaluation instance, the image features remain the same from first
@@ -120,12 +124,14 @@ class BottomUpTopDownAttention(nn.Module):
         maintain a cache of last 10 return values because on call signature, and not actually
         execute itself if it is called with the same image features seen at least once in last
         10 calls. This saves some computation.
+
         Parameters
         ----------
         image_features: torch.Tensor
             A tensor of shape ``(batch_size, num_boxes, image_feature_size)``. ``num_boxes`` for
             each instance in a batch might be different. Instances with lesser boxes are padded
             with zeros up to ``num_boxes``.
+
         Returns
         -------
         torch.Tensor
