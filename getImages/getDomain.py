@@ -43,9 +43,9 @@ with open('nocaps_val_detections.json','r') as json_file, open('domain2.txt','r'
         print("near domain")
     else:
         print("out domain")
-    """
+ 	"""   
     for key, value in d.items():
-        if (all(item in ids for item in value)):
+        if (any(item in ids for item in value) and not all(item in ids for item in value)):
             print(key)
-            """
+   		 """       
           
