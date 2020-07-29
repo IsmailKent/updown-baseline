@@ -11,11 +11,14 @@ from updown.modules.attention import BottomUpTopDownAttention
 class UpDownCell(nn.Module):
     r"""
     The basic computation unit of :class:`~updown.models.updown_captioner.UpDownCaptioner`.
+
     Extended Summary
     ----------------
     The architecture (`Anderson et al. 2017 (Fig. 3) <https://arxiv.org/abs/1707.07998>`_)
     is as follows:
+
     .. code-block:: text
+
                                         h2 (t)
                                          .^.
                                           |
@@ -38,8 +41,10 @@ class UpDownCell(nn.Module):
                         |                 |                  |
                         |             mean pooled        input token
                     h2 (t-1)           features           embedding
+
     If :class:`~updown.models.updown_captioner.UpDownCaptioner` is analogous to an
     :class:`~torch.nn.LSTM`, then this class would be analogous to :class:`~torch.nn.LSTMCell`.
+
     Parameters
     ----------
     image_feature_size: int
@@ -88,6 +93,7 @@ class UpDownCell(nn.Module):
         Given image features, input token embeddings of current time-step and LSTM states,
         predict output token embeddings for next time-step and update states. This behaves
         very similar to :class:`~torch.nn.LSTMCell`.
+
         Parameters
         ----------
         image_features: torch.Tensor
@@ -101,6 +107,7 @@ class UpDownCell(nn.Module):
             A dict with keys ``{"h1", "c1", "h2", "c2"}`` of LSTM states: (h1, c1) for Attention
             LSTM and (h2, c2) for Language LSTM. If not provided (at first time-step), these are
             initialized as zeros.
+
         Returns
         -------
         Tuple[torch.Tensor, Dict[str, torch.Tensor]]
@@ -159,6 +166,7 @@ class UpDownCell(nn.Module):
         r"""
         Perform mean pooling of bottom-up image features, while taking care of variable
         ``num_boxes`` in case of adaptive features.
+
         Extended Summary
         ----------------
         For a single training/evaluation instance, the image features remain the same from first
@@ -166,12 +174,14 @@ class UpDownCell(nn.Module):
         maintain a cache of last 10 return values because on call signature, and not actually
         execute itself if it is called with the same image features seen at least once in last
         10 calls. This saves some computation.
+
         Parameters
         ----------
         image_features: torch.Tensor
             A tensor of shape ``(batch_size, num_boxes, image_feature_size)``. ``num_boxes`` for
             each instance in a batch might be different. Instances with lesser boxes are padded
             with zeros up to ``num_boxes``.
+
         Returns
         -------
         Tuple[torch.Tensor, torch.Tensor]
