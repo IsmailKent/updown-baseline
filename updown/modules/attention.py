@@ -12,7 +12,6 @@ class BottomUpTopDownAttention(nn.Module):
     A PyTorch module to compute bottom-up top-down attention
     (`Anderson et al. 2017 <https://arxiv.org/abs/1707.07998>`_). Used in
     :class:`~updown.modules.updown_cell.UpDownCell`
-
     Parameters
     ----------
     query_size: int
@@ -30,7 +29,7 @@ class BottomUpTopDownAttention(nn.Module):
         self._projection_size = projection_size
         self._query_vector_projection_layer = nn.Linear(query_size, projection_size, bias=False)
         self._image_features_projection_layer = nn.Linear(
-            image_feature_size, projection_size, bias=False
+            2*image_feature_size, projection_size, bias=False
         )
         self._attention_layer = nn.Linear(projection_size, 1, bias=False)
         self._graph_network = GCN(nfeat=image_feature_size,nhid=image_feature_size,nclass=image_feature_size,dropout=0.25).cuda() #nclass is output size
@@ -47,7 +46,6 @@ class BottomUpTopDownAttention(nn.Module):
         over image features, using the query vector. Query vector is typically the output of
         attention LSTM in :class:`~updown.modules.updown_cell.UpDownCell`. Both image features
         and query vectors are first projected to a common dimension, that is ``projection_size``.
-
         Parameters
         ----------
         query_vector: torch.Tensor
@@ -59,7 +57,6 @@ class BottomUpTopDownAttention(nn.Module):
         image_features_mask: torch.Tensor
             A mask over image features if ``num_boxes`` are different for each instance. Elements
             where mask is zero are not attended over.
-
         Returns
         -------
         torch.Tensor
@@ -68,18 +65,18 @@ class BottomUpTopDownAttention(nn.Module):
             (for adaptive features), then weights where the mask is zero, would be zero.
         """
         projected_query_vector = self._query_vector_projection_layer(query_vector).cuda()
-        boxes_adj_matrix , image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
-        output_gcn = self._graph_network(image_features,boxes_adj_matrix)
+        boxes_adj_matrix , graph_image_features = GraphBuilder.build_batch_graph(image_features,image_boxes)
+        output_gcn = self._graph_network(graph_image_features,boxes_adj_matrix)
         output_gcn = output_gcn.reshape((image_boxes.shape[0],image_boxes.shape[1],output_gcn.shape[1]))
         output_gcn = output_gcn.cuda()
         # shape: (batch_size, projectionsize)
-
-        
+        concatenated_features = torch.cat((image_features,output_gcn),dim=2)
+        projected_image_features = self._project_image_features(concatenated_features)
         # Image features are projected by a method call, which is decorated using LRU cache, to
         # save some computation. Refer method docstring.
         # shape: (batch_size, num_boxes, projection_size)
         
-        projected_image_features = self._project_image_features(output_gcn)
+        #projected_image_features = self._project_image_features(image_features)
 
         # Broadcast query_vector as image_features for addition.
         # shape: (batch_size, num_boxes, projection_size)
@@ -111,12 +108,10 @@ class BottomUpTopDownAttention(nn.Module):
 
         return attention_weights
 
-
     @lru_cache(maxsize=10)
     def _project_image_features(self, image_features: torch.Tensor) -> torch.Tensor:
         r"""
         Project image features to a common dimension for applying attention.
-
         Extended Summary
         ----------------
         For a single training/evaluation instance, the image features remain the same from first
@@ -124,14 +119,12 @@ class BottomUpTopDownAttention(nn.Module):
         maintain a cache of last 10 return values because on call signature, and not actually
         execute itself if it is called with the same image features seen at least once in last
         10 calls. This saves some computation.
-
         Parameters
         ----------
         image_features: torch.Tensor
             A tensor of shape ``(batch_size, num_boxes, image_feature_size)``. ``num_boxes`` for
             each instance in a batch might be different. Instances with lesser boxes are padded
             with zeros up to ``num_boxes``.
-
         Returns
         -------
         torch.Tensor
