@@ -16,8 +16,7 @@ from torch.nn.modules.module import Module
 class GraphConvolution(Module):
     """
     Simple GCN layer, similar to https://arxiv.org/abs/1609.02907
-    Implementation taken from
-    https://github.com/tkipf/pygcn
+    Implementation taken from https://github.com/tkipf/pygcn
     """
 
     def __init__(self, in_features, out_features, bias=True):

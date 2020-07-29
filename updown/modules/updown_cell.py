@@ -85,6 +85,7 @@ class UpDownCell(nn.Module):
     def forward(
         self,
         image_features: torch.Tensor,
+        image_boxes: torch.Tensor,
         token_embedding: torch.Tensor,
         states: Optional[Dict[str, torch.Tensor]] = None,
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
@@ -114,7 +115,6 @@ class UpDownCell(nn.Module):
             is the updated state "h2", and updated states (h1, c1), (h2, c2).
         """
         batch_size = image_features.size(0)
-
         # Average pooling of image features happens only at the first timestep. LRU cache
         # saves compute by not executing the function call in subsequent timesteps.
         # shape: (batch_size, image_feature_size), (batch_size, num_boxes)
@@ -140,7 +140,8 @@ class UpDownCell(nn.Module):
 
         # shape: (batch_size, num_boxes)
         attention_weights = self._butd_attention(
-            states["h1"], image_features, image_features_mask=image_features_mask
+            query_vector = states["h1"], image_features= image_features, image_boxes = image_boxes,
+            image_features_mask=image_features_mask
         )
 
         # shape: (batch_size, image_feature_size)
