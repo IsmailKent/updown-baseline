@@ -8,7 +8,7 @@ import torch
 # Type hint for objects returned by ``TrainingDataset.__getitem__``.
 TrainingInstance = TypedDict(
     "TrainingInstance",
-    {"image_id": int, "image_features": np.ndarray, "image_boxes":np.ndarray, "caption_tokens": List[int]},
+    {"image_id": int, "image_features": np.ndarray, "caption_tokens": List[int]},
 )
 
 # Type hint for objects returned by ``TrainingDataset.collate_fn``.
@@ -17,21 +17,19 @@ TrainingBatch = TypedDict(
     {
         "image_id": torch.LongTensor,
         "image_features": torch.FloatTensor,
-        "image_boxes": torch.FloatTensor,
         "caption_tokens": torch.LongTensor,
     },
 )
 
 # Type hint for objects returned by ``EvaluationDataset.__getitem__``.
 EvaluationInstance = TypedDict(
-    "EvaluationInstance", {"image_id": int, "image_features": np.ndarray, "image_boxes": np.ndarray}
+    "EvaluationInstance", {"image_id": int, "image_features": np.ndarray}
 )
 EvaluationInstanceWithConstraints = TypedDict(
     "EvaluationInstanceWithConstraints",
     {
         "image_id": int,
         "image_features": np.ndarray,
-        "image_boxes":np.ndarray,
         "fsm": torch.ByteTensor,
         "num_states": int,
         "num_constraints": int,
@@ -40,14 +38,13 @@ EvaluationInstanceWithConstraints = TypedDict(
 
 # Type hint for objects returned by ``EvaluationDataset.collate_fn``.
 EvaluationBatch = TypedDict(
-    "EvaluationBatch", {"image_id": torch.LongTensor, "image_features": torch.FloatTensor, "image_boxes":torch.FloatTensor}
+    "EvaluationBatch", {"image_id": torch.LongTensor, "image_features": torch.FloatTensor}
 )
 EvaluationBatchWithConstraints = TypedDict(
     "EvaluationBatchWithConstraints",
     {
         "image_id": int,
         "image_features": torch.FloatTensor,
-        "image_boxes": torch.FloatTensor,
         "fsm": torch.ByteTensor,
         "num_constraints": torch.LongTensor,
     },
