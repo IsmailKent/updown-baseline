@@ -21,14 +21,12 @@ class UpDownCaptioner(nn.Module):
     `Anderson et al. 2017 <https://arxiv.org/abs/1707.07998>`_. At training time, this model
     maximizes the likelihood of ground truth caption, given image features. At inference time,
     given image features, captions are decoded using beam search.
-
     Extended Summary
     ----------------
     This captioner is basically a recurrent language model for caption sequences. Internally, it
     runs :class:`~updown.modules.updown_cell.UpDownCell` for multiple time-steps. If this class is
     analogous to an :class:`~torch.nn.LSTM`, then :class:`~updown.modules.updown_cell.UpDownCell`
     would be analogous to :class:`~torch.nn.LSTMCell`.
-
     Parameters
     ----------
     vocabulary: allennlp.data.Vocabulary
@@ -149,7 +147,6 @@ class UpDownCaptioner(nn.Module):
         r"""
         Initialize embeddings of all the tokens in a given
         :class:`~allennlp.data.vocabulary.Vocabulary` by their GloVe vectors.
-
         Extended Summary
         ----------------
         It is recommended to train an :class:`~updown.models.updown_captioner.UpDownCaptioner` with
@@ -158,7 +155,6 @@ class UpDownCaptioner(nn.Module):
         domain), and their embeddings will never be updated during training. Initializing with frozen
         GloVe embeddings is helpful, because they capture more meaningful semantics than randomly
         initialized embeddings.
-
         Returns
         -------
         torch.Tensor
@@ -187,7 +183,6 @@ class UpDownCaptioner(nn.Module):
         r"""
         Given bottom-up image features, maximize the likelihood of paired captions during
         training. During evaluation, decode captions given image features using beam search.
-
         Parameters
         ----------
         image_features: torch.Tensor
@@ -206,7 +201,6 @@ class UpDownCaptioner(nn.Module):
         num_constraints: torch.Tensor, optional (default = None)
             A tensor of shape ``(batch_size, )`` containing the total number of given constraints
             for CBS. Would be ``None`` for regular beam search decoding.
-
         Returns
         -------
         Dict[str, torch.Tensor]
@@ -299,7 +293,6 @@ class UpDownCaptioner(nn.Module):
         Given image features, tokens predicted at previous time-step and LSTM states of the
         :class:`~updown.modules.updown_cell.UpDownCell`, take a decoding step. This is also
         called by the beam search class.
-
         Parameters
         ----------
         image_features: torch.Tensor
@@ -310,7 +303,6 @@ class UpDownCaptioner(nn.Module):
             ``net_beam_size`` is 1 during teacher forcing (training), ``beam_size`` for regular
             :class:`allennlp.nn.beam_search.BeamSearch` and ``beam_size * num_states`` for
             :class:`updown.modules.cbs.ConstrainedBeamSearch`
-
         states: [Dict[str, torch.Tensor], optional (default = None)
             LSTM states of the :class:`~updown.modules.updown_cell.UpDownCell`. These are
             initialized as zero tensors if not provided (at first time-step).
@@ -365,7 +357,6 @@ class UpDownCaptioner(nn.Module):
         r"""
         Compute cross entropy loss of predicted caption (logits) w.r.t. target caption. The cross
         entropy loss of caption is cross entropy loss at each time-step, summed.
-
         Parameters
         ----------
         logits: torch.Tensor
@@ -378,7 +369,6 @@ class UpDownCaptioner(nn.Module):
             A mask over target captions, elements where mask is zero are ignored from loss
             computation. Here, we ignore ``@@UNKNOWN@@`` token (and hence padding tokens too
             because they are basically the same).
-
         Returns
         -------
         torch.Tensor
