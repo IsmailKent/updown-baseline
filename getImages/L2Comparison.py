@@ -48,7 +48,7 @@ with open('nocaps_val_detections.json','r') as oi_result, h5py.File(filename, 'r
             print(boxes)
             index_closest_box = 0
             min_distance = 99999
-            for i, box in boxes:
+            for i, box in enumerate(boxes):
                 x1,y1,x2,y2 = tuple(box)
                 lx1,ly1,lx2,ly2 = tuple(look_for_box)
                 distance = np.sqrt((x1-lx1)**2 + (y1-ly1)**2) + np.sqrt((x2-lx2)**2+(y2-ly2)**2)

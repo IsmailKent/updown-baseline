@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 from allennlp.data import Vocabulary
 
 from updown.config import Config
-from updown.data.readers import CocoCaptionsReader, ConstraintBoxesReader, ImageFeaturesReader
+from updown.data.readers import CocoCaptionsReader, ConstraintBoxesReader, ImageFeaturesReader, ImageBoxesReader
 from updown.types import (
     TrainingInstance,
     TrainingBatch,
@@ -52,8 +52,10 @@ class TrainingDataset(Dataset):
         max_caption_length: int = 20,
         in_memory: bool = True,
     ) -> None:
+        print("initiation Training data set")
         self._vocabulary = vocabulary
         self._image_features_reader = ImageFeaturesReader(image_features_h5path, in_memory)
+        self._image_boxes_reader= ImageBoxesReader(image_features_h5path, in_memory)
         self._captions_reader = CocoCaptionsReader(captions_jsonpath)
 
         self._max_caption_length = max_caption_length
@@ -78,6 +80,7 @@ class TrainingDataset(Dataset):
     def __getitem__(self, index: int) -> TrainingInstance:
         image_id, caption = self._captions_reader[index]
         image_features = self._image_features_reader[image_id]
+        image_boxes = self._image_boxes_reader[image_id]
 
         # Tokenize caption.
         caption_tokens: List[int] = [self._vocabulary.get_token_index(c) for c in caption]
@@ -92,6 +95,7 @@ class TrainingDataset(Dataset):
         item: TrainingInstance = {
             "image_id": image_id,
             "image_features": image_features,
+            "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
         }
         return item
@@ -107,10 +111,15 @@ class TrainingDataset(Dataset):
         image_features = torch.from_numpy(
             _collate_image_features([instance["image_features"] for instance in batch_list])
         )
+        
+        image_boxes = torch.from_numpy(
+            _collate_image_features([instance["image_boxes"] for instance in batch_list])
+        )
 
         batch: TrainingBatch = {
             "image_id": image_id,
             "image_features": image_features,
+            "image_boxes":image_boxes,
             "caption_tokens": caption_tokens,
         }
         return batch
@@ -137,6 +146,7 @@ class EvaluationDataset(Dataset):
 
     def __init__(self, image_features_h5path: str, in_memory: bool = True) -> None:
         self._image_features_reader = ImageFeaturesReader(image_features_h5path, in_memory)
+        self._image_boxes_reader = ImageBoxesReader(image_features_h5path, in_memory)
         self._image_ids = sorted(list(self._image_features_reader._map.keys()))
 
     @classmethod
@@ -148,23 +158,39 @@ class EvaluationDataset(Dataset):
     def __len__(self) -> int:
         return len(self._image_ids)
 
-    def __getitem__(self, index: int) -> EvaluationInstance:
+    def __getitem__(self, index: int) -> TrainingInstance:
         image_id = self._image_ids[index]
         image_features = self._image_features_reader[image_id]
+        image_boxes = self._image_boxes_reader[image_id]
 
-        item: EvaluationInstance = {"image_id": image_id, "image_features": image_features}
+
+
+        item: EvaluationInstance = {
+            "image_id": image_id,
+            "image_features": image_features,
+            "image_boxes":image_boxes,
+        }
         return item
 
-    def collate_fn(self, batch_list: List[EvaluationInstance]) -> EvaluationBatch:
+    def collate_fn(self, batch_list: List[TrainingInstance]) -> TrainingBatch:
         # Convert lists of ``image_id``s and ``caption_tokens``s as tensors.
         image_id = torch.tensor([instance["image_id"] for instance in batch_list]).long()
+        
 
         # Pad adaptive image features in the batch.
         image_features = torch.from_numpy(
             _collate_image_features([instance["image_features"] for instance in batch_list])
         )
+        
+        image_boxes = torch.from_numpy(
+            _collate_image_features([instance["image_boxes"] for instance in batch_list])
+        )
 
-        batch: EvaluationBatch = {"image_id": image_id, "image_features": image_features}
+        batch: EvaluationBatch = {
+            "image_id": image_id,
+            "image_features": image_features,
+            "image_boxes":image_boxes,
+        }
         return batch
 
 

@@ -1,7 +1,6 @@
 import argparse
 import os
 from typing import Any, Dict, List
-
 import numpy as np
 from tensorboardX import SummaryWriter
 import torch
@@ -118,7 +117,7 @@ if __name__ == "__main__":
             vocabulary, wordforms_tsvpath=_C.DATA.CBS.WORDFORMS
         )
 
-    train_dataset = TrainingDataset.from_config(_C, vocabulary=vocabulary, in_memory=_A.in_memory)
+    train_dataset = TrainingDataset.from_config(_C, vocabulary=vocabulary, in_memory=False)
     train_dataloader = DataLoader(
         train_dataset,
         batch_size=_C.OPTIM.BATCH_SIZE,
@@ -151,6 +150,7 @@ if __name__ == "__main__":
         num_workers=_A.cpu_workers,
         collate_fn=val_dataset.collate_fn,
     )
+    
 
     model = UpDownCaptioner.from_config(_C, vocabulary=vocabulary).to(device)
     if len(_A.gpu_ids) > 1 and -1 not in _A.gpu_ids:
@@ -203,9 +203,8 @@ if __name__ == "__main__":
 
         # keys: {"image_id", "image_features", "caption_tokens"}
         batch = next(train_dataloader)
-
         optimizer.zero_grad()
-        output_dict = model(batch["image_features"], batch["caption_tokens"])
+        output_dict = model(batch["image_features"],batch["image_boxes"], batch["caption_tokens"])
         batch_loss = output_dict["loss"].mean()
 
         batch_loss.backward()
@@ -229,12 +228,13 @@ if __name__ == "__main__":
                 for batch in tqdm(val_dataloader):
                     # keys: {"image_id", "image_features"}
                     batch = {key: value.to(device) for key, value in batch.items()}
-
+                       
                     with torch.no_grad():
                         # shape: (batch_size, max_caption_length)
                         # Pass finite state machine and number of constraints if using CBS.
                         batch_predictions = model(
-                            batch["image_features"],
+                            image_features = batch["image_features"],
+                            image_boxes = batch["image_boxes"],
                             fsm=batch.get("fsm", None),
                             num_constraints=batch.get("num_constraints", None),
                         )["predictions"]
