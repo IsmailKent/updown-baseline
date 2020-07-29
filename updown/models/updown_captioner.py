@@ -175,7 +175,6 @@ class UpDownCaptioner(nn.Module):
     def forward(  # type: ignore
         self,
         image_features: torch.Tensor,
-        image_boxes: torch.Tensor,
         caption_tokens: Optional[torch.Tensor] = None,
         fsm: torch.Tensor = None,
         num_constraints: torch.Tensor = None,
@@ -208,6 +207,7 @@ class UpDownCaptioner(nn.Module):
             ``{"predictions"}`` or ``{"loss"}``.
         """
         batch_size, num_boxes, image_feature_size = image_features.size()
+
         # Initialize states at zero-th timestep.
         states = None
 
@@ -234,8 +234,7 @@ class UpDownCaptioner(nn.Module):
                 input_tokens = caption_tokens[:, timestep]
 
                 # shape: (batch_size, num_classes)
-                output_logits, states = self._decode_step(image_features = image_features, image_boxes = image_boxes,
-                                                          previous_predictions = input_tokens, states = states)
+                output_logits, states = self._decode_step(image_features, input_tokens, states)
 
                 # list of tensors, shape: (batch_size, 1, vocab_size)
                 step_logits.append(output_logits.unsqueeze(1))
@@ -255,13 +254,13 @@ class UpDownCaptioner(nn.Module):
 
             # Add image features as a default argument to match callable signature acceptable by
             # beam search class (previous predictions and states only).
-            beam_decode_step = functools.partial(self._decode_step,image_features,image_boxes)
+            beam_decode_step = functools.partial(self._decode_step, image_features)
 
             # shape (all_top_k_predictions): (batch_size, net_beam_size, num_decoding_steps)
             # shape (log_probabilities): (batch_size, net_beam_size)
             if self._use_cbs:
                 all_top_k_predictions, log_probabilities = self._beam_search.search(
-                    start_predictions = start_predictions,  start_state = states, step = beam_decode_step, fsm =  fsm
+                    start_predictions, states, beam_decode_step, fsm
                 )
                 best_beam = select_best_beam_with_constraints(
                     all_top_k_predictions,
@@ -271,7 +270,7 @@ class UpDownCaptioner(nn.Module):
                 )
             else:
                 all_top_k_predictions, log_probabilities = self._beam_search.search(
-                   start_predictions = start_predictions, start_state = states, step= beam_decode_step
+                    start_predictions, states, beam_decode_step
                 )
                 best_beam = select_best_beam(all_top_k_predictions, log_probabilities)
 
@@ -283,12 +282,9 @@ class UpDownCaptioner(nn.Module):
     def _decode_step(
         self,
         image_features: torch.Tensor,
-        image_boxes: torch.Tensor,
         previous_predictions: torch.Tensor,
         states: Optional[Dict[str, torch.Tensor]] = None,
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        
-
         r"""
         Given image features, tokens predicted at previous time-step and LSTM states of the
         :class:`~updown.modules.updown_cell.UpDownCell`, take a decoding step. This is also
@@ -322,14 +318,6 @@ class UpDownCaptioner(nn.Module):
             image_features = image_features.view(
                 batch_size * net_beam_size, num_boxes, image_feature_size
             )
-            
-            # Add (net) beam dimension and repeat image features.
-            image_boxes = image_boxes.unsqueeze(1).repeat(1, net_beam_size, 1, 1)
-
-            # shape: (batch_size * net_beam_size, num_boxes, image_feature_size)
-            image_boxes = image_boxes.view(
-                batch_size * net_beam_size, num_boxes, 4
-            )
 
         # shape: (batch_size * net_beam_size, )
         current_input = previous_predictions
@@ -338,7 +326,7 @@ class UpDownCaptioner(nn.Module):
         token_embeddings = self._embedding_layer(current_input)
 
         # shape: (batch_size * net_beam_size, hidden_size)
-        updown_output, states = self._updown_cell(image_features, image_boxes, token_embeddings, states)
+        updown_output, states = self._updown_cell(image_features, token_embeddings, states)
 
         # shape: (batch_size * net_beam_size, vocab_size)
         updown_output = self._output_projection(updown_output)

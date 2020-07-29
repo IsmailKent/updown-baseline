@@ -8,10 +8,11 @@ if (mode=="val"):
 else:
 	file_source = '../data/nocaps/annotations/nocaps_test_image_info.json'
 
-classes = []
+url=""
+ID =""
 with open(file_source) as json_file:
 	data = json.load(json_file)
-	for ann in data['annotations']:
+	for image in data['images']:
 		url = image['coco_url']
 		ID = image['id']
 		command = 'wget -O '+mode+'/'+str(ID)+'.jpg '+url
